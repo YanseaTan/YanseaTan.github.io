@@ -1,0 +1,22 @@
+# Executables
+*.exe
+*.out
+*.app
+
+# Idea
+.idea
+.DS_Store
+.vscode
+.vs
+*.sln
+*.vcxproj
+*.vcxproj.*
+*.iml
+out
+
+# Files
+lib/
+X64/
+
+# Output
+*.txt
