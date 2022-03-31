@@ -12,8 +12,10 @@ Glodon Product Marketing Assistant
 
 Project in development:
 
+- [Qt-based concrete bending test data processing software](https://github.com/YanseaTan/bending-data)
 - [Qt-based visual employee information management system](https://github.com/YanseaTan/qt-based-eims)
 - [Polymorphism-based employee information management system](https://github.com/YanseaTan/polymorphism-based-eims)
+- [Python scripts for Abaqus modeling and calculations](https://github.com/YanseaTan/python-script-for-abaqus)
 - [Personal website based on GitHub Pages](https://github.com/YanseaTan/YanseaTan.github.io)
 - [Autoresponder bot OraKit](https://github.com/YanseaTan/uubc-orakit)
 
