@@ -2,7 +2,7 @@
 
 Welcome to ***yansea.cc*** ! This is Hailong's personal website, who will post some articles about study and daily life here :)
 
-[[Blog]](./blog/) · [[Github]](https://github.com/YanseaTan)
+[[ Blog ]](./blog/) · [[ Code ]](./code/) · [[ Github ]](https://github.com/YanseaTan)
 
 ### -- [ Resume ] --
 
@@ -26,3 +26,9 @@ Email: yanseatan@163.com
 - 2022.03.17 [GitHub Pages 搭建过程][220317]
 
 [220317]:./blog/220317-github-pages-building-process
+
+### -- [[ Code ]](./code/) --
+
+- [LeetCode 刷题记录][leetcode]
+
+[leetcode]:./code/leetcode
