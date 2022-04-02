@@ -30,5 +30,7 @@ Email: yanseatan@163.com
 ### -- [[ Code ]](./code/) --
 
 - [LeetCode 刷题记录][leetcode]
+- [剑指 Offer 刷题记录][jz-offer]
 
 [leetcode]:./code/leetcode
+[jz-offer]:./code/jz-offer
