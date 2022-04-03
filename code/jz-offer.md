@@ -9,24 +9,38 @@
     - [JZ11 旋转数组的最小数字](#jz11-旋转数组的最小数字)
     - [？JZ12 矩阵中的路径](#jz12-矩阵中的路径)
     - [？JZ13 机器人的运动范围](#jz13-机器人的运动范围)
+    - [JZ17 打印从1到最大的n位数](#jz17-打印从1到最大的n位数)
+    - [JZ21 调整数组顺序使奇数位于偶数前面](#jz21-调整数组顺序使奇数位于偶数前面)
   - [字符串](#字符串)
     - [JZ5 替换空格](#jz5-替换空格)
+    - [JZ15 二进制中1的个数](#jz15-二进制中1的个数)
+    - [?JZ19 正则表达式匹配](#jz19-正则表达式匹配)
+    - [?JZ20 表示数值的字符串](#jz20-表示数值的字符串)
   - [链表](#链表)
     - [JZ6 从尾到头打印链表](#jz6-从尾到头打印链表)
+    - [JZ18 删除链表的节点](#jz18-删除链表的节点)
+    - [JZ22 链表中倒数第k个节点](#jz22-链表中倒数第k个节点)
+    - [JZ24 反转链表](#jz24-反转链表)
+    - [JZ25 合并两个排序的链表](#jz25-合并两个排序的链表)
   - [二叉树](#二叉树)
     - [？JZ7 重建二叉树](#jz7-重建二叉树)
   - [栈](#栈)
     - [？JZ9 用两个栈实现队列](#jz9-用两个栈实现队列)
-  - [动态规划](#动态规划)
+  - [数学](#数学)
     - [JZ10-I 斐波那契数列](#jz10-i-斐波那契数列)
     - [JZ10-II 青蛙跳台阶问题](#jz10-ii-青蛙跳台阶问题)
     - [JZ14-I 剪绳子](#jz14-i-剪绳子)
+    - [JZ16 数值的整数次方](#jz16-数值的整数次方)
   - [技巧](#技巧)
     - [递归](#递归)
+    - [动态规划](#动态规划)
     - [二分查找](#二分查找)
+    - [双指针](#双指针)
     - [？回溯](#回溯)
     - [？深度优先搜索 DFS](#深度优先搜索-dfs)
     - [？广度优先搜索 BFS](#广度优先搜索-bfs)
+    - [位运算](#位运算)
+    - [快速幂](#快速幂)
 
 ## 数组
 
@@ -174,6 +188,95 @@ private:
 
 ```
 
+### JZ17 打印从1到最大的n位数
+
+输入数字 n，按顺序打印出从 1 到最大的 n 位十进制数。比如输入 3，则打印出 1、2、3 一直到最大的 3 位数 999。
+
+自己（没考虑大树情况）：
+
+```c++
+class Solution {
+public:
+    vector<int> printNumbers(int n) {
+        int x = 1;
+        for(int i = 0; i < n; i++){
+            x *= 10;
+        }
+        vector<int> res;
+        for(int i = 1; i < x; i++){
+            res.push_back(i);
+        }
+        return res;
+    }
+};
+```
+
+其他：
+
+```c++
+class Solution {
+private:
+    vector<int> nums;
+    string s;
+public:
+    vector<int> printNumbers(int n) {
+        s.resize(n, '0');
+        dfs(n, 0);
+        return nums;
+    }
+    
+    // 枚举所有情况
+    void dfs(int end, int index) {
+        if (index == end) {
+            save(); return;
+        }
+        for (int i = 0; i <= 9; ++i) {
+            s[index] = i + '0';
+            dfs(end, index + 1);
+        }
+    }
+    
+    // 去除首部0
+    void save() {
+        int ptr = 0;
+        while (ptr < s.size() && s[ptr] == '0') ptr++;
+        if (ptr != s.size())
+            nums.emplace_back(stoi(s.substr(ptr)));
+    }
+};
+```
+
+### JZ21 调整数组顺序使奇数位于偶数前面
+
+输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数在数组的前半部分，所有偶数在数组的后半部分。
+
+自己（快慢双指针）：
+
+```c++
+class Solution {
+public:
+    vector<int> exchange(vector<int>& nums) {
+        int n = nums.size();
+        if(n < 2) return nums;
+        int fast = 1;
+        int slow = 0;
+        while(fast < n){
+            if(nums[slow] % 2 == 1){
+                slow++;
+            }
+            else if(nums[fast] % 2 == 1){
+                int temp = nums[fast];
+                nums[fast] = nums[slow];
+                nums[slow] = temp;
+                slow++;
+            }
+            fast++;
+        }
+        return nums;
+    }
+};
+```
+
 ## 字符串
 
 ### JZ5 替换空格
@@ -207,6 +310,44 @@ public:
         return s;
     }
 };
+```
+
+### JZ15 二进制中1的个数
+
+编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为 汉明重量).）。
+
+其他（位运算）：
+
+```c++
+class Solution {
+public:
+    int hammingWeight(uint32_t n) {
+        int res = 0;
+        while(n){
+            //若 n & 1 = 0 ，则 n 二进制最右一位为 0 ；若 n & 1 = 1 ，则 n 二进制最右一位为 1
+            res += n & 1;
+            //将 n 右移一位
+            n >>= 1;
+        }
+        return res;
+    }
+};
+```
+
+### ?JZ19 正则表达式匹配
+
+请实现一个函数用来匹配包含'. '和'*'的正则表达式。模式中的字符'.'表示任意一个字符，而'*'表示它前面的字符可以出现任意次（含0次）。在本题中，匹配是指字符串的所有字符匹配整个模式。例如，字符串"aaa"与模式"a.a"和"ab*ac*a"匹配，但与"aa.a"和"ab*a"均不匹配。
+
+```c++
+
+```
+
+### ?JZ20 表示数值的字符串
+
+请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。
+
+```c++
+
 ```
 
 ## 链表
@@ -273,6 +414,150 @@ public:
 };
 ```
 
+### JZ18 删除链表的节点
+
+给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。返回删除后的链表的头节点。
+
+自己：
+
+```c++
+class Solution {
+public:
+    ListNode* deleteNode(ListNode* head, int val) {
+        int n = 1;
+        ListNode* temp = head;
+        while(temp != nullptr && temp->next != nullptr){
+            if(temp->val == val) break;
+            temp = temp->next;
+            n++;
+        }
+        if(n == 1){
+            head = head->next;
+            return head;
+        }
+        else{
+            ListNode* r = head;
+            for(int i = 0; i < n - 2; i++){
+                r = r->next;
+            }
+            r->next = r->next->next;
+        }
+        return head;
+    }
+};
+```
+
+其他（思路一样，更简洁）：
+
+```c++
+class Solution {
+public:
+    ListNode* deleteNode(ListNode* head, int val) {
+        //这一步就比我简洁了很多
+        if(head->val == val) return head->next;
+        ListNode *pre = head, *cur = head->next;
+        while(cur != nullptr && cur->val != val) {
+            pre = cur;
+            cur = cur->next;
+        }
+        if(cur != nullptr) pre->next = cur->next;
+        return head;
+    }
+};
+```
+
+### JZ22 链表中倒数第k个节点
+
+输入一个链表，输出该链表中倒数第k个节点。为了符合大多数人的习惯，本题从1开始计数，即链表的尾节点是倒数第1个节点。例如，一个链表有 6 个节点，从头节点开始，它们的值依次是 1、2、3、4、5、6。这个链表的倒数第 3 个节点是值为 4 的节点。
+
+自己（顺序查找，需要先遍历得到链表长度 n）：
+
+```c++
+class Solution {
+public:
+    ListNode* getKthFromEnd(ListNode* head, int k) {
+        int n = 0;
+        ListNode* temp = head;
+        while(temp != nullptr){
+            temp = temp->next;
+            n++;
+        }
+        for(int i = 0; i < n - k; i++){
+            head = head->next;
+        }
+        return head;
+    }
+};
+```
+
+官方（双指针，不需要遍历得到链表长度 n，推荐）：
+
+```c++
+class Solution {
+public:
+    ListNode* getKthFromEnd(ListNode* head, int k) {
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while(fast && k > 0){
+            fast = fast->next;
+            k--;
+        }
+        while(fast){
+            fast = fast->next;
+            slow = slow->next;
+        }
+        return slow;
+    }
+};
+```
+
+### JZ24 反转链表
+
+定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点。
+
+其他（双指针）：
+
+```c++
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* pre = nullptr;
+        ListNode* cur = head;
+        while(cur){
+            ListNode* temp = cur->next;
+            cur->next = pre;
+            pre = cur;
+            cur = temp;
+        }
+        return pre;
+    }
+};
+```
+
+### JZ25 合并两个排序的链表
+
+输入两个递增排序的链表，合并这两个链表并使新链表中的节点仍然是递增排序的。
+
+自己（递归）：
+
+```c++
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        if(l1 == nullptr) return l2;
+        if(l2 == nullptr) return l1;
+        if(l1->val <= l2->val){
+            l1->next = mergeTwoLists(l1->next, l2);
+            return l1;
+        }
+        else{
+            l2->next = mergeTwoLists(l1, l2->next);
+            return l2;
+        }
+    }
+};
+```
+
 ## 二叉树
 
 ### ？JZ7 重建二叉树
@@ -293,7 +578,7 @@ public:
 
 ```
 
-## 动态规划
+## 数学
 
 ### JZ10-I 斐波那契数列
 
@@ -416,15 +701,83 @@ public:
 };
 ```
 
+### JZ16 数值的整数次方
+
+实现 pow(x, n) ，即计算 x 的 n 次幂函数（即，x ^ n）。不得使用库函数，同时不需要考虑大数问题。
+
+自己（暴力，超时）：
+
+```c++
+class Solution {
+public:
+    double myPow(double x, int n) {
+        double res = 1;
+        if(n == 0 || x == 1) return 1;
+        else if(n > 0){
+            for(int i = 0; i < n; i++){
+                res *= x;
+            }
+            return res;
+        }
+        else{
+            for(int i = 0; i > n; i--){
+                res *= x;
+            }
+            return 1 / res;
+        }
+    }
+};
+```
+
+其他（快速幂，推荐）：
+
+```c++
+class Solution {
+public:
+    double myPow(double x, int n) {
+        if(x == 0) return 0;
+        double res = 1;
+        long m = n;
+        if(m < 0){
+            x = 1 / x;
+            m = - m;
+        }
+        while(m){
+            if((m & 1) == 1) res *= x;
+            x *= x;
+            m >>= 1;
+        }
+        return res;
+    }
+};
+```
+
 ## 技巧
 
 ### 递归
 
 [JZ6 从尾到头打印链表](#jz6-从尾到头打印链表)
+[JZ25 合并两个排序的链表](#jz25-合并两个排序的链表)
+
+### 动态规划
+
+[JZ10-I 斐波那契数列](#jz10-i-斐波那契数列)
+
+[JZ10-II 青蛙跳台阶问题](#jz10-ii-青蛙跳台阶问题)
+
+[JZ14-I 剪绳子](#jz14-i-剪绳子)
+
+[JZ19 正则表达式匹配](#jz19-正则表达式匹配)
 
 ### 二分查找
 
 [JZ11 旋转数组的最小数字](#jz11-旋转数组的最小数字)
+
+### 双指针
+
+[JZ21 调整数组顺序使奇数位于偶数前面](#jz21-调整数组顺序使奇数位于偶数前面)
+[JZ22 链表中倒数第k个节点](#jz22-链表中倒数第k个节点)
+[JZ24 反转链表](#jz24-反转链表)
 
 ### ？回溯
 
@@ -443,3 +796,11 @@ public:
 [JZ12 矩阵中的路径](#jz12-矩阵中的路径)
 
 [JZ13 机器人的运动范围](#jz13-机器人的运动范围)
+
+### 位运算
+
+[JZ15 二进制中1的个数](#jz15-二进制中1的个数)
+
+### 快速幂
+
+[JZ16 数值的整数次方](#jz16-数值的整数次方)
