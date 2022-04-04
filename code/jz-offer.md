@@ -24,6 +24,8 @@
     - [JZ25 合并两个排序的链表](#jz25-合并两个排序的链表)
   - [二叉树](#二叉树)
     - [？JZ7 重建二叉树](#jz7-重建二叉树)
+    - [JZ26 树的子结构](#jz26-树的子结构)
+    - [JZ27 二叉树的镜像](#jz27-二叉树的镜像)
   - [栈](#栈)
     - [？JZ9 用两个栈实现队列](#jz9-用两个栈实现队列)
   - [数学](#数学)
@@ -568,6 +570,46 @@ public:
 
 ```
 
+### JZ26 树的子结构
+
+输入两棵二叉树A和B，判断B是不是A的子结构。(约定空树不是任意一个树的子结构)；B是A的子结构， 即 A中有出现和B相同的结构和节点值。
+
+其他（先序遍历，递归）：
+
+```c++
+class Solution {
+public:
+    bool recur(TreeNode* A, TreeNode* B){
+        if(B == nullptr) return true;
+        if(A == nullptr || A->val != B->val) return false;
+        return recur(A->left, B->left) && recur(A->right, B->right);
+    }
+    bool isSubStructure(TreeNode* A, TreeNode* B) {
+        return (A != nullptr && B != nullptr) && (recur(A, B) || isSubStructure(A->left, B) || isSubStructure(A->right, B));
+    }
+};
+```
+
+### JZ27 二叉树的镜像
+
+请完成一个函数，输入一个二叉树，该函数输出它的镜像。
+
+自己（递归）：
+
+```c++
+class Solution {
+public:
+    TreeNode* mirrorTree(TreeNode* root) {
+        if(root != nullptr){
+            TreeNode* temp = root->left;
+            root->left = mirrorTree(root->right);
+            root->right = mirrorTree(temp);
+        }
+        return root;
+    }
+};
+```
+
 ## 栈
 
 ### ？JZ9 用两个栈实现队列
@@ -758,6 +800,8 @@ public:
 
 [JZ6 从尾到头打印链表](#jz6-从尾到头打印链表)
 [JZ25 合并两个排序的链表](#jz25-合并两个排序的链表)
+[JZ26 树的子结构](#jz26-树的子结构)
+[JZ27 二叉树的镜像](#jz27-二叉树的镜像)
 
 ### 动态规划
 
