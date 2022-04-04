@@ -11,6 +11,7 @@
     - [？JZ13 机器人的运动范围](#jz13-机器人的运动范围)
     - [JZ17 打印从1到最大的n位数](#jz17-打印从1到最大的n位数)
     - [JZ21 调整数组顺序使奇数位于偶数前面](#jz21-调整数组顺序使奇数位于偶数前面)
+    - [JZ29 顺时针打印矩阵](#jz29-顺时针打印矩阵)
   - [字符串](#字符串)
     - [JZ5 替换空格](#jz5-替换空格)
     - [JZ15 二进制中1的个数](#jz15-二进制中1的个数)
@@ -26,8 +27,10 @@
     - [？JZ7 重建二叉树](#jz7-重建二叉树)
     - [JZ26 树的子结构](#jz26-树的子结构)
     - [JZ27 二叉树的镜像](#jz27-二叉树的镜像)
+    - [JZ28 对称的二叉树](#jz28-对称的二叉树)
   - [栈](#栈)
     - [？JZ9 用两个栈实现队列](#jz9-用两个栈实现队列)
+    - [JZ30 包含min函数的栈](#jz30-包含min函数的栈)
   - [数学](#数学)
     - [JZ10-I 斐波那契数列](#jz10-i-斐波那契数列)
     - [JZ10-II 青蛙跳台阶问题](#jz10-ii-青蛙跳台阶问题)
@@ -275,6 +278,34 @@ public:
             fast++;
         }
         return nums;
+    }
+};
+```
+
+### JZ29 顺时针打印矩阵
+
+输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
+
+```c++
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        if(matrix.size() == 0) return {};
+        vector<int> res;
+        //初始化四个边界
+        int t = 0, b = matrix.size() - 1, l = 0, r = matrix[0].size() - 1;
+        while(true){
+            for(int i = l; i <= r; i++) res.push_back(matrix[t][i]);
+            //在缩减边界的同时判断是否出界
+            if(++t > b) break;
+            for(int i = t; i <= b; i++) res.push_back(matrix[i][r]);
+            if(--r < l) break;
+            for(int i = r; i >= l; i--) res.push_back(matrix[b][i]);
+            if(--b < t) break;
+            for(int i = b; i >= t; i--) res.push_back(matrix[i][l]);
+            if(++l > r) break;
+        }
+        return res;
     }
 };
 ```
@@ -610,6 +641,55 @@ public:
 };
 ```
 
+### JZ28 对称的二叉树
+
+请实现一个函数，用来判断一棵二叉树是不是对称的。如果一棵二叉树和它的镜像一样，那么它是对称的。
+
+自己（先镜像，再比较，结果只能返回 true，原因是镜像的过程中把 root 本身也会修改掉，哪怕我换了个名字叫 temp2）：
+
+```c++
+class Solution {
+public:
+    TreeNode* mirrorTree(TreeNode* temp2){
+        if(temp2 != nullptr){
+            TreeNode* temp = temp2->left;
+            temp2->left = mirrorTree(temp2->right);
+            temp2->right = mirrorTree(temp);
+        }
+        return temp2;
+    }
+    bool dfs(TreeNode* a, TreeNode* b){
+        if(a == nullptr && b == nullptr) return true;
+        if(a == nullptr || b == nullptr) return false;
+        if(a->val != b->val) return false;
+        return dfs(a->left, b->left) && dfs(a->right, b->right);
+    }
+    bool isSymmetric(TreeNode* root) {
+        TreeNode* temp2 = root;
+        TreeNode* newRoot = mirrorTree(temp2);
+        return dfs(root, newRoot);
+    }
+};
+```
+
+其他（省去镜像步骤，直接左右对比）：
+
+```c++
+class Solution {
+public:
+    bool dfs(TreeNode* L, TreeNode* R){
+        if(L == nullptr && R == nullptr) return true;
+        if(L == nullptr || R == nullptr || L->val != R->val) return false;
+        //关键在于这一步
+        return dfs(L->left, R->right) && dfs(L->right, R->left);
+    }
+    bool isSymmetric(TreeNode* root) {
+        if(root == nullptr) return true;
+        return dfs(root->left, root->right);
+    }
+};
+```
+
 ## 栈
 
 ### ？JZ9 用两个栈实现队列
@@ -618,6 +698,52 @@ public:
 
 ```c++
 
+```
+
+### JZ30 包含min函数的栈
+
+定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用 min、push 及 pop 的时间复杂度都是 O(1)。
+
+```c++
+class MinStack {
+public:
+    //分两个栈，一个正常顺序存储，一个不断存储当前最小值
+    stack<int> norm;
+    stack<int> minStack;
+
+    MinStack() {
+        //初始化
+        while(!norm.empty()){
+            norm.pop();
+        }
+        while(!minStack.empty()){
+            minStack.pop();
+        }
+        //防止 min() 比较时没有数可以比
+        minStack.push(INT_MAX);
+    }
+    
+    void push(int x) {
+        norm.push(x);
+        //不加 std:: 会报错
+        int minVal = std::min(minStack.top(), x);
+        minStack.push(minVal);
+    }
+    
+    void pop() {
+        norm.pop();
+        //因为每次都会填进去东西，因此他们数量是一样的，minStack会重复存储最小值
+        minStack.pop();
+    }
+    
+    int top() {
+        return norm.top();
+    }
+    
+    int min() {
+        return minStack.top();
+    }
+};
 ```
 
 ## 数学
@@ -799,9 +925,14 @@ public:
 ### 递归
 
 [JZ6 从尾到头打印链表](#jz6-从尾到头打印链表)
+
 [JZ25 合并两个排序的链表](#jz25-合并两个排序的链表)
+
 [JZ26 树的子结构](#jz26-树的子结构)
+
 [JZ27 二叉树的镜像](#jz27-二叉树的镜像)
+
+[JZ28 对称的二叉树](#jz28-对称的二叉树)
 
 ### 动态规划
 
@@ -820,7 +951,9 @@ public:
 ### 双指针
 
 [JZ21 调整数组顺序使奇数位于偶数前面](#jz21-调整数组顺序使奇数位于偶数前面)
+
 [JZ22 链表中倒数第k个节点](#jz22-链表中倒数第k个节点)
+
 [JZ24 反转链表](#jz24-反转链表)
 
 ### ？回溯
