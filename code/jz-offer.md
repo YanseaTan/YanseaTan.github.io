@@ -28,10 +28,13 @@
     - [JZ26 树的子结构](#jz26-树的子结构)
     - [JZ27 二叉树的镜像](#jz27-二叉树的镜像)
     - [JZ28 对称的二叉树](#jz28-对称的二叉树)
+    - [JZ32-I 从上到下打印二叉树](#jz32-i-从上到下打印二叉树)
+    - [JZ32-II 从上到下打印二叉树 II](#jz32-ii-从上到下打印二叉树-ii)
   - [栈](#栈)
     - [？JZ9 用两个栈实现队列](#jz9-用两个栈实现队列)
     - [JZ30 包含min函数的栈](#jz30-包含min函数的栈)
     - [JZ31 栈的压入、弹出序列](#jz31-栈的压入弹出序列)
+  - [队列](#队列)
   - [数学](#数学)
     - [JZ10-I 斐波那契数列](#jz10-i-斐波那契数列)
     - [JZ10-II 青蛙跳台阶问题](#jz10-ii-青蛙跳台阶问题)
@@ -692,6 +695,66 @@ public:
 };
 ```
 
+### JZ32-I 从上到下打印二叉树
+
+从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
+
+其他（利用队列queue先进先出的特性）：
+
+```c++
+class Solution {
+public:
+    vector<int> levelOrder(TreeNode* root) {
+        if(root == nullptr) return {};
+        vector<int> res;
+        //存储二叉树类型的队列（关键）
+        queue<TreeNode*> q;
+        q.push(root);
+        while(q.size()){
+            TreeNode* temp = q.front();
+            q.pop();
+            res.push_back(temp->val);
+            //每次推进去的都是一整个二叉树分支
+            if(temp->left) q.push(temp->left);
+            if(temp->right) q.push(temp->right);
+        }
+        return res;
+    }
+};
+```
+
+### JZ32-II 从上到下打印二叉树 II
+
+从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+
+其他（同上，多了个维度）：
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        if(root == nullptr) return {};
+        vector<vector<int>> res;
+        queue<TreeNode*> q;
+        q.push(root);
+        while(q.size()){
+            //注意在 for 外面定义
+            vector<int> resTemp;
+            //这个就很有意思了，只需要把开始循环时的 size 赋给 i，后续 size 大小和 i 无关
+            for(int i = q.size(); i > 0; i--){
+                TreeNode* temp = q.front();
+                q.pop();
+                resTemp.push_back(temp->val);
+                if(temp->left) q.push(temp->left);
+                if(temp->right) q.push(temp->right);
+            }
+            res.push_back(resTemp);
+        }
+        return res;
+    }
+};
+```
+
 ## 栈
 
 ### ？JZ9 用两个栈实现队列
@@ -777,6 +840,10 @@ public:
     }
 };
 ```
+
+## 队列
+
+[JZ32-I 从上到下打印二叉树](#jz32-i-从上到下打印二叉树)
 
 ## 数学
 
@@ -1011,6 +1078,10 @@ public:
 [JZ12 矩阵中的路径](#jz12-矩阵中的路径)
 
 [JZ13 机器人的运动范围](#jz13-机器人的运动范围)
+
+[JZ32-I 从上到下打印二叉树](#jz32-i-从上到下打印二叉树)
+
+[JZ32-II 从上到下打印二叉树 II](#jz32-ii-从上到下打印二叉树-ii)
 
 ### 位运算
 
