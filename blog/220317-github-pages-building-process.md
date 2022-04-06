@@ -2,6 +2,12 @@
 
 *Article copied from [sspai.com](https://sspai.com/post/54608) on 2022.03.17 by [YanseaTan](https://yansea.cc)*
 
+- [GitHub Pages 搭建过程](#github-pages-搭建过程)
+  - [为什么使用 GitHub Pages](#为什么使用-github-pages)
+  - [如何使用 GitHub Pages](#如何使用-github-pages)
+    - [基本页面的生成](#基本页面的生成)
+    - [配置自定义域名并免费使用 HTTPS](#配置自定义域名并免费使用-https)
+
 ## 为什么使用 GitHub Pages
 
 如果你把他作为一个轻量级的个人博客服务，GitHub Pages 相较 WordPress 之类的建站服务有什么优势呢？
