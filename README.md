@@ -31,6 +31,8 @@ Email: yanseatan@163.com
 
 - [LeetCode 刷题记录][leetcode]
 - [剑指 Offer 刷题记录][jz-offer]
+- [ACM 模式输入输出练习][acm-try]
 
 [leetcode]:./code/leetcode
 [jz-offer]:./code/jz-offer
+[acm-try]:./code/acm-try
