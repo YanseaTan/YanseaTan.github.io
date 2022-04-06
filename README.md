@@ -23,16 +23,16 @@ Email: yanseatan@163.com
 
 ### -- [[ Blog ]](./blog/) --
 
-- 2022.03.17 [GitHub Pages 搭建过程][220317]
+- [GitHub Pages 搭建过程][220317]
 
 [220317]:./blog/220317-github-pages-building-process
 
 ### -- [[ Code ]](./code/) --
 
-- [LeetCode 刷题记录][leetcode]
-- [剑指 Offer 刷题记录][jz-offer]
 - [ACM 模式输入输出练习][acm-try]
+- [剑指 Offer 刷题记录][jz-offer]
+- [LeetCode 刷题记录][leetcode]
 
-[leetcode]:./code/leetcode
-[jz-offer]:./code/jz-offer
 [acm-try]:./code/acm-try
+[jz-offer]:./code/jz-offer
+[leetcode]:./code/leetcode
