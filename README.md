@@ -29,12 +29,10 @@ Email: yanseatan@163.com
 
 ### -- [[ Code ]](./code/) --
 
-- [赛码 刷题记录][acmcoder]
-- [ACM 模式输入输出练习][acm-try]
+- [ACM 刷题记录][acm-code]
 - [剑指 Offer 刷题记录][jz-offer]
 - [LeetCode 刷题记录][leetcode]
 
-[acmcoder]:./code/acmcoder
-[acm-try]:./code/acm-try
+[acm-code]:./code/acm-code
 [jz-offer]:./code/jz-offer
 [leetcode]:./code/leetcode
