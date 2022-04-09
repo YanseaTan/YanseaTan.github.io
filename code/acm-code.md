@@ -14,13 +14,15 @@
   - [动态规划](#动态规划)
     - [上台阶](#上台阶)
     - [三角形](#三角形)
-    - [连续最大和](#连续最大和)
   - [贪心](#贪心)
     - [机器人跳跃问题](#机器人跳跃问题)
+    - [连续最大和](#连续最大和)
+    - [最大乘积](#最大乘积)
   - [数学](#数学)
     - [找零](#找零)
     - [汽水瓶](#汽水瓶)
     - [数字翻转](#数字翻转)
+    - [搬圆桌](#搬圆桌)
   - [ACM 模式输入输出练习](#acm-模式输入输出练习)
 
 ## 数组
@@ -421,57 +423,6 @@ int main(){
 }
 ```
 
-### 连续最大和
-
-一个数组有 N 个元素，求连续子数组的最大和。 例如：[-1,2,1]，和最大的连续子数组为[2,1]，其和为 3
-
-输入描述：
-
-> 输入为两行。 第一行一个整数n(1 <= n <= 100000)，表示一共有n个元素 第二行为n个数，即每个元素,每个整数都在32位int范围内。以空格分隔。
-
-输出描述：
-
-> 所有连续子数组中和最大的值。
-
-自己（未考虑完所有情况）：
-
-```c++
-#include<iostream>
-using namespace std;
-
-int main(){
-    int n, num, sum = 0, max;
-    cin>>n;
-    int nums[n];
-    for(int i = 0; i < n; i++){
-        cin>>num;
-        nums[i] = num;
-    }
-    max = nums[0];
-    for(int i = 0; i < n; i++){
-        if(nums[i] >= 0){
-            for(int j = i; j < n; j++){
-                sum += nums[j];
-                if(sum > max) max = sum;
-                if(sum < 0 || j == n - 1){
-                    i = j;
-                    sum = 0;
-                    break;
-                }
-            }
-        }
-    }
-    cout<<max<<endl;
-    return 0;
-}
-```
-
-其他：
-
-```c++
-
-```
-
 ## 贪心
 
 ### 机器人跳跃问题
@@ -506,6 +457,172 @@ int main(){
         e = (e + h[i]) / 2 + 1;
     }
     cout<<e<<endl;
+    return 0;
+}
+```
+
+### 连续最大和
+
+一个数组有 N 个元素，求连续子数组的最大和。 例如：[-1,2,1]，和最大的连续子数组为[2,1]，其和为 3
+
+输入描述：
+
+> 输入为两行。 第一行一个整数n(1 <= n <= 100000)，表示一共有n个元素 第二行为n个数，即每个元素,每个整数都在32位int范围内。以空格分隔。
+
+输出描述：
+
+> 所有连续子数组中和最大的值。
+
+自己（单独考虑了全为负的情况，有点啰嗦了）：
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main(){
+    int n, num, sum = 0, maxPos, maxNeg = -1;
+    bool para = false;
+    cin>>n;
+    int nums[n];
+    for(int i = 0; i < n; i++){
+        cin>>num;
+        nums[i] = num;
+    }
+    for(int i = 0; i < n; i++){
+        if(nums[i] >= 0){
+            para = true;
+            for(int j = i; j < n; j++){
+                sum += nums[j];
+                if(sum > maxPos) maxPos = sum;
+                if(sum < 0 || j == n - 1){
+                    i = j;
+                    sum = 0;
+                    break;
+                }
+            }
+        }
+        else{
+            if(nums[i] > maxNeg) maxNeg = nums[i];
+        }
+    }
+    if(para) cout<<maxPos<<endl;
+    else cout<<maxNeg<<endl;
+    return 0;
+}
+```
+
+其他（更简洁）：
+
+```c++
+#include<iostream>
+#include<vector>
+using namespace std;
+int main()
+{
+    int n;
+    cin>>n;
+    vector<int> in(n);
+    for(int i=0;i<n;i++)
+        cin>>in[i];
+    vector<int> dp(n);
+    //先默认赋值
+    dp[0]=in[0];
+    int maxVal=in[0];
+    for(int i=1;i<n;i++)
+    {
+        //关键是这一行
+        dp[i]=max(in[i],dp[i-1]+in[i]);
+        if(dp[i]>maxVal)
+            maxVal=dp[i];
+    }
+    cout<<maxVal<<endl;
+    return 0;
+}
+```
+
+### 最大乘积
+
+给定一个无序数组，包含正数、负数和0，要求从中找出3个数的乘积，使得乘积最大，要求时间复杂度：O(n)，空间复杂度：O(1)
+
+输入描述：
+
+> 输入共2行，第一行包括一个整数n，表示数组长度 第二行为n个以空格隔开的整数，分别为A1,A2, … ,An
+
+输出描述：
+
+> 满足条件的最大乘积
+
+```c++
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int main(){
+    long int n, num, max1 = 0, max2 = 0;
+    cin>>n;
+    vector<long int> nums;
+    for(int i = 0; i < n; i++){
+        cin>>num;
+        nums.push_back(num);
+    }
+    sort(nums.begin(), nums.end());
+    if(nums[n - 3] > 0) max2 = nums[n - 3] * nums[n - 2] * nums[n - 1];
+    if(nums[n - 1] > 0) max1 = nums[0] * nums[1] * nums[n - 1];
+    else max1 = nums[n - 3] * nums[n - 2] * nums[n - 1];
+    cout<<max(max1, max2)<<endl;;
+    return 0;
+}
+```
+
+官方（逻辑更完整）：
+
+```c++
+#include<iostream>
+//INT_MAX, INT_MIN 需要
+#include<limits.h>
+using namespace std;
+int main()
+{
+    int i, n, num;
+    long long max_mul;
+    /* max1, max2, max3 分别为最大值，次大值，第三大值
+     * min1, min2 分别为最小值，次小值*/
+    long long max1, max2, max3, min1, min2;
+    max1 = max2 = max3 = INT_MIN;
+    min1 = min2 = INT_MAX;
+    cin >> n;
+    for(i = 0; i < n; i++)
+    {
+        cin >> num;
+        if(num < min1)
+        {
+            min2 = min1;
+            min1 = num;
+        }
+        else if(num < min2)
+        {
+            min2 = num;
+        }
+
+        if(num > max1)
+        {
+            max3 = max2;
+            max2 = max1;
+            max1 = num;
+        }
+        else if(num > max2)
+        {
+            max3 = max2;
+            max2 = num;
+        }
+        else if(num > max3)
+        {
+            max3 = num;
+        }
+    }
+    max_mul = max1*max2*max3 > max1*min1*min2 ? max1*max2*max3 : max1*min1*min2;
+    cout << max_mul << endl;
     return 0;
 }
 ```
@@ -610,6 +727,36 @@ int main(){
     int x, y;
     cin>>x>>y;
     cout<<rev(rev(x) + rev(y))<<endl;
+    return 0;
+}
+```
+
+### 搬圆桌
+
+现在有一张半径为r的圆桌，其中心位于(x,y)，现在他想把圆桌的中心移到(x1,y1)。每次移动一步，都必须在圆桌边缘固定一个点然后将圆桌绕这个点旋转。问最少需要移动几步。
+
+输入描述：
+
+> 一行五个整数r,x,y,x1,y1(1≤r≤100000,-100000≤x,y,x1,y1≤100000)
+
+输出描述：
+
+> 输出一个整数，表示答案
+
+```c++
+#include<iostream>
+#include<math.h>
+using namespace std;
+
+int main(){
+    int r, n;
+    double x, y, x1, y1;
+    while(cin>>r>>x>>y>>x1>>y1){
+        double D = sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1));
+        double N = D / (2 * r);
+        n = (int)N;
+        n == N ? cout<<n<<endl : cout<<n + 1<<endl;
+    }
     return 0;
 }
 ```
