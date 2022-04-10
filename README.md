@@ -22,8 +22,10 @@ Email: yanseatan@163.com
 
 ### -- [[ Blog ]](./blog/) --
 
+- [一些逻辑思维题][220410]
 - [GitHub Pages 搭建过程][220317]
 
+[220410]:./blog/220410-summary-of-logical-thinking-questions
 [220317]:./blog/220317-github-pages-building-process
 
 ### -- [[ Code ]](./code/) --
