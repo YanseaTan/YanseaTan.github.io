@@ -17,7 +17,6 @@ Project in development:
 - [Polymorphism-based employee information management system](https://github.com/YanseaTan/polymorphism-based-eims)
 - [Python scripts for Abaqus modeling and calculations](https://github.com/YanseaTan/python-script-for-abaqus)
 - [Personal website based on GitHub Pages](https://github.com/YanseaTan/YanseaTan.github.io)
-- [Autoresponder bot OraKit](https://github.com/YanseaTan/uubc-orakit)
 
 Email: yanseatan@163.com
 
