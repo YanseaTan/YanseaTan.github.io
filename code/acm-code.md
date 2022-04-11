@@ -7,10 +7,14 @@
     - [明明的随机数](#明明的随机数)
     - [最高分是多少](#最高分是多少)
     - [序列找数](#序列找数)
+    - [赛马](#赛马)
+    - [查找数字](#查找数字)
+    - [找到1的组数](#找到1的组数)
   - [字符串](#字符串)
     - [进制转换](#进制转换)
     - [字符移位](#字符移位)
     - [扭蛋机](#扭蛋机)
+    - [数字转字符串](#数字转字符串)
   - [动态规划](#动态规划)
     - [上台阶](#上台阶)
     - [三角形](#三角形)
@@ -23,6 +27,8 @@
     - [汽水瓶](#汽水瓶)
     - [数字翻转](#数字翻转)
     - [搬圆桌](#搬圆桌)
+    - [求解f(n)](#求解fn)
+    - [猜数](#猜数)
   - [ACM 模式输入输出练习](#acm-模式输入输出练习)
 
 ## 数组
@@ -205,6 +211,122 @@ int main(){
 }
 ```
 
+### 赛马
+
+沫璃有2*n匹马，每匹马都有一个速度v。现在沫璃将马分成两个队伍，每个队伍各有n匹马，两个队之间进行n场比赛，每场比赛两队各派出一匹马参赛，每匹马都恰好出场一次。沫璃想知道是否存在一种分配队伍的方法使得无论怎么安排比赛，第一个队伍都一定能获得全胜。两匹马若速度不一样，那么速度快的获胜，若速度一样，则都有可能获胜。
+
+输入描述：
+
+> 第一行一个数T(T<=100)，表示数据组数。
+> 
+> 对于每组数据，第一行一个整数n , (1<=n<=100)
+> 
+> 接下来一行，2*n个整数，第i个整数vi表示第i匹马的速度, (1 <= vi <= 1000)
+
+输出描述：
+
+> 对于每组数据，输出一行，若存在一种分配方法使得第一个队伍全胜输出YES，否则输出NO
+
+```c++
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int main(){
+    int t, n, v;
+    while(cin>>t){
+        for(int i = 0; i < t; i++){
+        cin>>n;
+        vector<int> m(2 * n);
+        for(int j = 0; j < 2 * n; j++){
+            cin>>v;
+            m[j] = v;
+        }
+        sort(m.begin(), m.end());
+        if(m[n - 1] == m[n]) cout<<"NO"<<endl;
+        else cout<<"YES"<<endl;
+        }
+    }
+    return 0;
+}
+```
+
+### 查找数字
+
+给定数组，任意相邻两个元素的差的绝对值为1，设计一个算法，在该数组中可以查找某个元素的位置，如果该元素的值多次出现，返回第一次的位置。例如{4, 5, 6, 5, 6, 7, 8, 9, 10, 9}元素9出现了两次，第一次出现的位置7。
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main(){
+    // 举一个输入的例子，注意普通数组的格式
+    int a[] = {4,5,6,5,6,7,8,9,10,9};
+    int target, n = sizeof(a);
+    while(cin>>target){
+        int i = 0;
+        while(i < n && i >=0){
+            if(a[i] == target){
+                cout<<i<<endl;
+                break;
+            }
+            i += abs(target - a[i]);
+        }
+    }
+    return 0;
+}
+```
+
+### 找到1的组数
+
+一个只包含0和1的阵列，找到1的组的个数，每个组的定义是横向和纵向相邻的值都为1。
+
+```c++
+#include<iostream>
+#include<vector>
+using namespace std;
+
+// 注意要用引用 &，才会对矩阵内容实际进行修改
+void clear(int i, int j, vector<vector<int>> &matrix){
+    if(i < matrix.size() && i >= 0 && j < matrix[0].size() && j >= 0){
+        if(matrix[i][j] == 1){
+            matrix[i][j] = 0;
+            clear(i - 1, j, matrix);
+            clear(i + 1, j, matrix);
+            clear(i, j - 1, matrix);
+            clear(i, j + 1, matrix);
+        }
+    }
+}
+
+bool dfs(int i, int j, vector<vector<int>> &matrix){
+    if(matrix[i][j] == 1){
+        clear(i, j, matrix);
+        return true;
+    }
+    else return false;
+}
+
+int findOne(vector<vector<int>> &matrix){
+    int m = matrix.size();
+    int n = matrix[0].size();
+    int count = 0;
+    for(int i = 0; i < m; i++){
+        for(int j = 0; j < n; j++){
+            if(dfs(i, j, matrix)) count++;
+        }
+    }
+    return count;
+}
+
+int main(){
+    // 输入好 matrix
+    cout<<findOne(matrix)<<endl;
+    return 0;
+}
+```
+
 ## 字符串
 
 ### 进制转换
@@ -338,6 +460,43 @@ int main(){
         }
     }
     cout<<res<<endl;
+    return 0;
+}
+```
+
+### 数字转字符串
+
+将给定的数转换为字符串，原则如下：1对应 a，2对应b，…..26对应z，例如12258可以转换为"abbeh", "aveh", "abyh", "lbeh" and "lyh"，个数为5，编写一个函数，给出可以转换的不同字符串的个数。
+
+```c++
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int main() {
+    string str;
+    while(cin>>str){
+        int n = str.size();
+        vector<int> dp(n + 1);
+        dp[n] = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            if (str[i] == '0') {
+                dp[i] = 0;
+            }
+            else {
+                dp[i] = dp[i + 1];
+                // 确保不是最后一位
+                if (i < n - 1) {
+                    // string 转 int
+                    int num = (str[i] - '0') * 10 + str[i + 1] - '0';
+                    if (num <= 26) {
+                        dp[i] += dp[i + 2];
+                    }
+                }
+            }
+        }
+        cout << dp[0] << endl;
+    }
     return 0;
 }
 ```
@@ -756,6 +915,58 @@ int main(){
         double N = D / (2 * r);
         n = (int)N;
         n == N ? cout<<n<<endl : cout<<n + 1<<endl;
+    }
+    return 0;
+}
+```
+
+### 求解f(n)
+
+求解f(n), f(n) = 1 – 2 + 3 – 4 + 5 - … + n
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main(){
+    int n, res = 0;
+    while(cin>>n){
+        // 时间复杂度高，需遍历
+        // for(int i = 1; i <= n; i++){
+        //     if(i % 2) res += i;
+        //     else res -= i;
+        // }
+        // 时间复杂度低，找数学规律
+        if(n % 2) res = (n + 1) / 2;
+        else res = -n / 2;
+        cout<<res<<endl;
+        // 初始化
+        res = 0;
+    }
+    return 0;
+}
+```
+
+### 猜数
+
+编写猜数游戏程序，语言不限。给定某个整数，从键盘上反复输入数据进行猜测。如果未猜中，程序提示输入过大或者过小；如果猜中，则输出猜的次数，最多允许猜10次。
+
+```c++
+#include<iostream>
+#include<time.h>
+using namespace std;
+
+int main(){
+    int num, guessNum, count = 0;
+    //设置随机数种子，使每次运行获取到的随机数值不同。
+    srand(time(NULL));
+    //获取1-100的随机数。
+    num = rand() % 100 + 1;
+    cout<<"Guess number:"<<endl;
+    while(cin>>guessNum && count++ <10){
+        if(guessNum < num) cout<<"Too small"<<endl;
+        else if(guessNum > num) cout <<"Too big"<<endl;
+        else cout << count << endl;
     }
     return 0;
 }

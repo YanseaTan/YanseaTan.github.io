@@ -9,6 +9,7 @@
       - [26. 删除有序数组中的重复项](#26-删除有序数组中的重复项)
       - [36. 有效的数独](#36-有效的数独)
       - [48. 旋转图像](#48-旋转图像)
+      - [55. 跳跃游戏](#55-跳跃游戏)
       - [66. 加一](#66-加一)
       - [122. 买卖股票的最佳时机 II](#122-买卖股票的最佳时机-ii)
       - [136. 只出现一次的数字](#136-只出现一次的数字)
@@ -157,6 +158,27 @@ public:
                 matrix[j][n - i - 1] = temp;
             }
         }
+    }
+};
+```
+
+#### 55. 跳跃游戏
+
+给出一个非负整数数组，你最初定位在数组的第一个位置，数组中的每个元素的值代表你在那个位置可以跳跃的最大长度。判断你是否能到达数组的最后一个位置。
+
+```c++
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 1) return true;
+        int max = 0;
+        for(int i = 0; i < n - 1; i++){
+            if(nums[i] + i > max) max = nums[i] + i;
+            if(max >= n - 1) return true;
+            else if(nums[i] == 0 && max == i) return false;
+        }
+        return false;
     }
 };
 ```
