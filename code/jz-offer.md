@@ -7,7 +7,7 @@
     - [JZ3 数组中重复的数字](#jz3-数组中重复的数字)
     - [JZ4 二维数组中的查找](#jz4-二维数组中的查找)
     - [JZ11 旋转数组的最小数字](#jz11-旋转数组的最小数字)
-    - [？JZ12 矩阵中的路径](#jz12-矩阵中的路径)
+    - [JZ12 矩阵中的路径](#jz12-矩阵中的路径)
     - [？JZ13 机器人的运动范围](#jz13-机器人的运动范围)
     - [JZ17 打印从1到最大的n位数](#jz17-打印从1到最大的n位数)
     - [JZ21 调整数组顺序使奇数位于偶数前面](#jz21-调整数组顺序使奇数位于偶数前面)
@@ -157,7 +157,7 @@ public:
 };
 ```
 
-### ？JZ12 矩阵中的路径
+### JZ12 矩阵中的路径
 
 给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
 
@@ -171,6 +171,7 @@ public:
         cols = board[0].size();
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < cols; j++) {
+                //i，j 是 board 的，0 是 word 的
                 if(dfs(board, word, i, j, 0)) return true;
             }
         }
@@ -182,8 +183,8 @@ private:
         if(i >= rows || i < 0 || j >= cols || j < 0 || board[i][j] != word[k]) return false;
         if(k == word.size() - 1) return true;
         board[i][j] = '\0';
-        bool res = dfs(board, word, i + 1, j, k + 1) || dfs(board, word, i - 1, j, k + 1) || 
-                      dfs(board, word, i, j + 1, k + 1) || dfs(board, word, i , j - 1, k + 1);
+        bool res = dfs(board, word, i + 1, j, k + 1) || dfs(board, word, i - 1, j, k + 1) || dfs(board, word, i, j + 1, k + 1) || dfs(board, word, i , j - 1, k + 1);
+        //回溯
         board[i][j] = word[k];
         return res;
     }
@@ -334,6 +335,7 @@ public:
         //需要先对原字符串扩容
         s.resize(sizeOld + n);
         int sizeNew = s.size();
+        //j 前面没有 int 了
         for(int i = sizeOld - 1, j = sizeNew - 1; i < j; i--, j--){
             if(s[i] != ' '){
                 s[j] = s[i];
@@ -362,10 +364,9 @@ public:
     int hammingWeight(uint32_t n) {
         int res = 0;
         while(n){
-            //若 n & 1 = 0 ，则 n 二进制最右一位为 0 ；若 n & 1 = 1 ，则 n 二进制最右一位为 1
-            res += n & 1;
-            //将 n 右移一位
-            n >>= 1;
+            res++;
+            //通过位运算公式 n & (n - 1)可以消去二进制n的最右边的一个 1
+            n = n & (n - 1);
         }
         return res;
     }
@@ -403,14 +404,12 @@ public:
         vector<int> res;
         if(head == nullptr) return res;
         //如果没不判断的话会报错
-        while(head != nullptr && head->next != nullptr){
+        while(head != nullptr){
             int j = head->val;
             //使用了 vector 容器的插入
             res.insert(res.begin(), j);
             head = head->next;
         }
-        int j = head->val;
-        res.insert(res.begin(), j);
         return res;
     }
 };
@@ -714,7 +713,7 @@ public:
             TreeNode* temp = q.front();
             q.pop();
             res.push_back(temp->val);
-            //每次推进去的都是一整个二叉树分支
+            //每次推进去的都是一整个二叉树分支 root 的地址
             if(temp->left) q.push(temp->left);
             if(temp->right) q.push(temp->right);
         }
@@ -912,7 +911,7 @@ public:
 
 ### JZ14-I 剪绳子
 
-给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 k[0],k[1]...k[m-1] 。请问 k[0]*k[1]*...*k[m-1] 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 k[0],k[1]...k[m-1] 。请问 k[0] * k[1] * ... * k[m-1] 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
 
 自己（偏暴力）：
 
@@ -1024,6 +1023,8 @@ public:
 ### 递归
 
 [JZ6 从尾到头打印链表](#jz6-从尾到头打印链表)
+
+[JZ12 矩阵中的路径](#jz12-矩阵中的路径)
 
 [JZ25 合并两个排序的链表](#jz25-合并两个排序的链表)
 
