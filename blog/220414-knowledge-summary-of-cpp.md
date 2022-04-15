@@ -18,6 +18,15 @@
     - [什么是面向对象？面向对象的三大特性](#什么是面向对象面向对象的三大特性)
     - [重载、重写、隐藏的区别](#重载重写隐藏的区别)
     - [什么是多态？多态如何实现？](#什么是多态多态如何实现)
+  - [类相关](#类相关)
+    - [纯虚函数](#纯虚函数)
+    - [虚函数和纯虚函数的区别](#虚函数和纯虚函数的区别)
+    - [虚函数的实现机制](#虚函数的实现机制)
+    - [单继承和多继承的虚函数表结构](#单继承和多继承的虚函数表结构)
+    - [构造函数、析构函数是否可以定义成虚函数？为什么？](#构造函数析构函数是否可以定义成虚函数为什么)
+    - [多重继承时会出现什么状况（菱形继承）？如何解决？](#多重继承时会出现什么状况菱形继承如何解决)
+    - [C++ 类对象的初始化顺序](#c-类对象的初始化顺序)
+    - [深拷贝和浅拷贝的区别](#深拷贝和浅拷贝的区别)
 
 ## 编译内存相关
 
@@ -339,3 +348,602 @@ int main()
 	return 0;
 }
 ```
+
+## 类相关
+
+### 纯虚函数
+
+1. 纯虚函数定义
+
+纯虚函数是在基类中声明的虚函数，它在基类中没有定义，但要求任何派生类都要定义自己的实现方法。在基类中实现纯虚函数的方法是在函数原型后加 “ =0 ”
+
+2. 引入原因
+
+- 为了方便使用多态特性，我们常常需要在基类中定义虚拟函数。
+- 在很多情况下，基类本身生成对象是不合情理的。例如，动物作为一个基类可以派生出老虎、孔雀等子类，但动物本身生成对象明显不合常理。
+
+为了解决上述问题，引入了纯虚函数的概念，将函数定义为纯虚函数（方法：virtual ReturnType Function()= 0;），则编译器要求在派生类中必须予以重载以实现多态性。同时含有纯虚拟函数的类称为抽象类，它不能生成对象。这样就很好地解决了上述两个问题。
+
+3. 相似概念
+
+- 多态性
+  
+  指相同对象收到不同消息或不同对象收到相同消息时产生不同的实现动作。C++支持两种多态性：编译时多态性，运行时多态性。
+  - 编译时多态性：通过函数重载和运算符重载来实现的。
+  - 运行时多态性：通过继承和虚函数来实现的。
+
+- 虚函数
+  
+  虚函数是在基类中被声明为virtual，并在派生类中重新定义的成员函数，可实现成员函数的动态重载。纯虚函数的声明有着特殊的语法格式：virtual 返回值类型成员函数名（参数表）=0；
+
+  请注意，纯虚函数应该只有声明，没有具体的定义，即使给出了纯虚函数的定义也会被编译器忽略。
+
+- 抽象类
+  
+  包含纯虚函数的类称为抽象类。由于抽象类包含了没有定义的纯虚函数，所以不能定义抽象类的对象，类中只有接口，没有具体的实现方法。在C++中，我们可以把只能用于被继承而不能直接创建对象的类设置为抽象类（Abstract Class）。继承纯虚函数的派生类，如果没有完全实现基类纯虚函数，依然是抽象类，不能实例化对象。
+
+  之所以要存在抽象类，最主要是因为它具有不确定因素。我们把那些类中的确存在，但是在父类中无法确定具体实现的成员函数称为纯虚函数。纯虚函数是一种特殊的虚函数，它只有声明，没有具体的定义。抽象类中至少存在一个纯虚函数；存在纯虚函数的类一定是抽象类。存在纯虚函数是成为抽象类的充要条件。
+
+  子类必须继承父类的纯虚函数，并全部实现后，才能创建子类的对象。
+
+### 虚函数和纯虚函数的区别
+
+除定义过程中的区别外，应注意如下两者作用的区别：
+
+- 定义一个函数为虚函数，不代表函数为不被实现的函数。
+- 定义他为虚函数是为了允许用基类的指针来调用子类的这个函数。
+- 定义一个函数为纯虚函数，才代表函数没有被实现。
+- 定义纯虚函数是为了实现一个接口，起到一个规范的作用，规范继承这个类的程序员必须实现这个函数。
+
+### 虚函数的实现机制
+
+实现机制：虚函数通过虚函数表来实现。虚函数的地址保存在虚函数表中，在类的对象所在的内存空间中，保存了指向虚函数表的指针（称为“虚表指针”），通过虚表指针可以找到类对应的虚函数表。虚函数表解决了基类和派生类的继承问题和类中成员函数的覆盖问题，当用基类的指针来操作一个派生类的时候，这张虚函数表就指明了实际应该调用的函数。
+
+虚函数表相关知识点：
+
+- 虚函数表存放的内容：类的虚函数的地址。
+- 虚函数表建立的时间：编译阶段，即程序的编译过程中会将虚函数的地址放在虚函数表中。
+- 虚表指针保存的位置：虚表指针存放在对象的内存空间中最前面的位置，这是为了保证正确取到虚函数的偏移量。
+
+应注意：虚函数表和类绑定，虚表指针和对象绑定。即类的不同的对象的虚函数表是一样的，但是每个对象都有自己的虚表指针，来指向类的虚函数表。
+
+实例，无虚函数覆盖的情况：
+
+```c++
+#include <iostream>
+using namespace std;
+
+class Base
+{
+public:
+    virtual void B_fun1() { cout << "Base::B_fun1()" << endl; }
+    virtual void B_fun2() { cout << "Base::B_fun2()" << endl; }
+    virtual void B_fun3() { cout << "Base::B_fun3()" << endl; }
+};
+
+class Derive : public Base
+{
+public:
+    virtual void D_fun1() { cout << "Derive::D_fun1()" << endl; }
+    virtual void D_fun2() { cout << "Derive::D_fun2()" << endl; }
+    virtual void D_fun3() { cout << "Derive::D_fun3()" << endl; }
+};
+int main()
+{
+    Base *p = new Derive();
+    p->B_fun1(); // Base::B_fun1()
+    return 0;
+}
+```
+
+### 单继承和多继承的虚函数表结构
+
+**编译器处理虚函数表：**
+
+- 编译器将虚函数表的指针放在类的实例对象的内存空间中，该对象调用该类的虚函数时，通过指针找到虚函数表，根据虚函数表中存放的虚函数的地址找到对应的虚函数。
+- 如果派生类没有重新定义基类的虚函数 A，则派生类的虚函数表中保存的是基类的虚函数 A 的地址，也就是说基类和派生类的虚函数 A 的地址是一样的。
+- 如果派生类重写了基类的某个虚函数 B，则派生的虚函数表中保存的是重写后的虚函数 B 的地址，也就是说虚函数 B 有两个版本，分别存放在基类和派生类的虚函数表中。
+- 如果派生类重新定义了新的虚函数 C，派生类的虚函数表保存新的虚函数 C 的地址。
+
+1. 单继承无虚函数覆盖的情况：
+
+```c++
+#include <iostream>
+using namespace std;
+
+class Base
+{
+public:
+    virtual void B_fun1() { cout << "Base::B_fun1()" << endl; }
+    virtual void B_fun2() { cout << "Base::B_fun2()" << endl; }
+    virtual void B_fun3() { cout << "Base::B_fun3()" << endl; }
+};
+
+class Derive : public Base
+{
+public:
+    virtual void D_fun1() { cout << "Derive::D_fun1()" << endl; }
+    virtual void D_fun2() { cout << "Derive::D_fun2()" << endl; }
+    virtual void D_fun3() { cout << "Derive::D_fun3()" << endl; }
+};
+int main()
+{
+    Base *p = new Derive();
+    p->B_fun1(); // Base::B_fun1()
+    return 0;
+}
+```
+
+2. 单继承有虚函数覆盖的情况：
+
+```c++
+#include <iostream>
+using namespace std;
+
+class Base
+{
+public:
+    virtual void fun1() { cout << "Base::fun1()" << endl; }
+    virtual void B_fun2() { cout << "Base::B_fun2()" << endl; }
+    virtual void B_fun3() { cout << "Base::B_fun3()" << endl; }
+};
+
+class Derive : public Base
+{
+public:
+    virtual void fun1() { cout << "Derive::fun1()" << endl; }
+    virtual void D_fun2() { cout << "Derive::D_fun2()" << endl; }
+    virtual void D_fun3() { cout << "Derive::D_fun3()" << endl; }
+};
+int main()
+{
+    Base *p = new Derive();
+    p->fun1(); // Derive::fun1()
+    return 0;
+}
+```
+
+3. 多继承无虚函数覆盖的情况：
+
+```c++
+#include <iostream>
+using namespace std;
+
+class Base1
+{
+public:
+    virtual void B1_fun1() { cout << "Base1::B1_fun1()" << endl; }
+    virtual void B1_fun2() { cout << "Base1::B1_fun2()" << endl; }
+    virtual void B1_fun3() { cout << "Base1::B1_fun3()" << endl; }
+};
+class Base2
+{
+public:
+    virtual void B2_fun1() { cout << "Base2::B2_fun1()" << endl; }
+    virtual void B2_fun2() { cout << "Base2::B2_fun2()" << endl; }
+    virtual void B2_fun3() { cout << "Base2::B2_fun3()" << endl; }
+};
+class Base3
+{
+public:
+    virtual void B3_fun1() { cout << "Base3::B3_fun1()" << endl; }
+    virtual void B3_fun2() { cout << "Base3::B3_fun2()" << endl; }
+    virtual void B3_fun3() { cout << "Base3::B3_fun3()" << endl; }
+};
+
+class Derive : public Base1, public Base2, public Base3
+{
+public:
+    virtual void D_fun1() { cout << "Derive::D_fun1()" << endl; }
+    virtual void D_fun2() { cout << "Derive::D_fun2()" << endl; }
+    virtual void D_fun3() { cout << "Derive::D_fun3()" << endl; }
+};
+
+int main(){
+    Base1 *p = new Derive();
+    p->B1_fun1(); // Base1::B1_fun1()
+    return 0;
+}
+```
+
+4. 多继承有虚函数覆盖的情况：
+
+```c++
+#include <iostream>
+using namespace std;
+
+class Base1
+{
+public:
+    virtual void fun1() { cout << "Base1::fun1()" << endl; }
+    virtual void B1_fun2() { cout << "Base1::B1_fun2()" << endl; }
+    virtual void B1_fun3() { cout << "Base1::B1_fun3()" << endl; }
+};
+class Base2
+{
+public:
+    virtual void fun1() { cout << "Base2::fun1()" << endl; }
+    virtual void B2_fun2() { cout << "Base2::B2_fun2()" << endl; }
+    virtual void B2_fun3() { cout << "Base2::B2_fun3()" << endl; }
+};
+class Base3
+{
+public:
+    virtual void fun1() { cout << "Base3::fun1()" << endl; }
+    virtual void B3_fun2() { cout << "Base3::B3_fun2()" << endl; }
+    virtual void B3_fun3() { cout << "Base3::B3_fun3()" << endl; }
+};
+
+class Derive : public Base1, public Base2, public Base3
+{
+public:
+    virtual void fun1() { cout << "Derive::fun1()" << endl; }
+    virtual void D_fun2() { cout << "Derive::D_fun2()" << endl; }
+    virtual void D_fun3() { cout << "Derive::D_fun3()" << endl; }
+};
+
+int main(){
+    Base1 *p1 = new Derive();
+    Base2 *p2 = new Derive();
+    Base3 *p3 = new Derive();
+    p1->fun1(); // Derive::fun1()
+    p2->fun1(); // Derive::fun1()
+    p3->fun1(); // Derive::fun1()
+    return 0;
+}
+```
+
+### 构造函数、析构函数是否可以定义成虚函数？为什么？
+
+构造函数一般不定义为虚函数，原因：
+
+- 从存储空间的角度考虑：构造函数是在实例化对象的时候进行调用，如果此时将构造函数定义成虚函数，需要通过访问该对象所在的内存空间才能进行虚函数的调用（因为需要通过指向虚函数表的指针调用虚函数表，虽然虚函数表在编译时就有了，但是没有虚函数的指针，虚函数的指针只有在创建了对象才有），但是此时该对象还未创建，便无法进行虚函数的调用。所以构造函数不能定义成虚函数。
+- 从使用的角度考虑：虚函数是基类的指针指向派生类的对象时，通过该指针实现对派生类的虚函数的调用，构造函数是在创建对象时自动调用的。
+- 从实现上考虑：虚函数表是在创建对象之后才有的，因此不能定义成虚函数。
+- 从类型上考虑：在创建对象时需要明确其类型。
+
+析构函数一般定义成虚函数，原因：
+
+析构函数定义成虚函数是为了防止内存泄漏，因为当基类的指针或者引用指向或绑定到派生类的对象时，如果未将基类的析构函数定义成虚函数，会调用基类的析构函数，那么只能将基类的成员所占的空间释放掉，派生类中特有的就会无法释放内存空间导致内存泄漏。
+
+### 多重继承时会出现什么状况（菱形继承）？如何解决？
+
+多重继承（多继承）：是指从多个直接基类中产生派生类。
+
+多重继承容易出现的问题：命名冲突和数据冗余问题。
+
+举例：
+
+```c++
+#include <iostream>
+using namespace std;
+
+// 间接基类
+class Base1
+{
+public:
+    int var1;
+};
+
+// 直接基类
+class Base2 : public Base1
+{
+public:
+    int var2;
+};
+
+// 直接基类
+class Base3 : public Base1
+{
+public:
+    int var3;
+};
+
+// 派生类
+class Derive : public Base2, public Base3
+{
+public:
+    void set_var1(int tmp) { var1 = tmp; } // error: reference to 'var1' is ambiguous. 命名冲突
+    void set_var2(int tmp) { var2 = tmp; }
+    void set_var3(int tmp) { var3 = tmp; }
+    void set_var4(int tmp) { var4 = tmp; }
+
+private:
+    int var4;
+};
+
+int main()
+{
+    Derive d;
+    return 0;
+}
+```
+
+上述程序的继承关系如下：（菱形继承）
+
+```mermaid
+graph RL
+A(Derive) --> B(Base2) & C(Base3)
+B & C --> D(Base1)
+```
+
+上述代码中存的问题：
+
+对于派生类 Derive 上述代码中存在直接继承关系和间接继承关系。
+
+- 直接继承：Base2 、Base3
+- 间接继承：Base1
+
+对于派生类中继承的的成员变量 var1 ，从继承关系来看，实际上保存了两份，一份是来自基类 Base2，一份来自基类 Base3。因此，出现了命名冲突。
+
+解决方法 1： 声明出现冲突的成员变量来源于哪个类
+
+```c++
+#include <iostream>
+using namespace std;
+
+// 间接基类
+class Base1
+{
+public:
+    int var1;
+};
+
+// 直接基类
+class Base2 : public Base1
+{
+public:
+    int var2;
+};
+
+// 直接基类
+class Base3 : public Base1
+{
+public:
+    int var3;
+};
+
+// 派生类 
+class Derive : public Base2, public Base3
+{
+public:
+    void set_var1(int tmp) { Base2::var1 = tmp; } // 这里声明成员变量来源于类 Base2，当然也可以声明来源于类 Base3
+    void set_var2(int tmp) { var2 = tmp; }
+    void set_var3(int tmp) { var3 = tmp; }
+    void set_var4(int tmp) { var4 = tmp; }
+
+private:
+    int var4;
+};
+
+int main()
+{
+    Derive d;
+    return 0;
+}
+```
+
+解决方法 2： 虚继承
+
+使用虚继承的目的：保证存在命名冲突的成员变量在派生类中只保留一份，即使间接基类中的成员在派生类中只保留一份。在菱形继承关系中，间接基类称为虚基类，直接基类和间接基类之间的继承关系称为虚继承。
+
+实现方式：在继承方式前面加上 virtual 关键字。
+
+```c++
+#include <iostream>
+using namespace std;
+
+// 间接基类，即虚基类
+class Base1
+{
+public:
+    int var1;
+};
+
+// 直接基类 
+class Base2 : virtual public Base1 // 虚继承
+{
+public:
+    int var2;
+};
+
+// 直接基类 
+class Base3 : virtual public Base1 // 虚继承
+{
+public:
+    int var3;
+};
+
+// 派生类
+class Derive : public Base2, public Base3
+{
+public:
+    void set_var1(int tmp) { var1 = tmp; } 
+    void set_var2(int tmp) { var2 = tmp; }
+    void set_var3(int tmp) { var3 = tmp; }
+    void set_var4(int tmp) { var4 = tmp; }
+
+private:
+    int var4;
+};
+
+int main()
+{
+    Derive d;
+    return 0;
+}
+```
+
+```mermaid
+graph RL
+A(Derive) --> B(Base2) & C(Base3)
+B & C -- 虚继承 --> D(Base1)
+```
+
+### C++ 类对象的初始化顺序
+
+1. 按照派生类继承基类的顺序，即派生列表中声明的顺序，依次初始化基类；
+2. 按照派生类中成员变量的声名顺序，依次初始化成员对象；
+3. 调用派生类自身的构造函数；
+4. 析构顺序和构造顺序相反。
+
+实例：
+
+```c++
+#include <iostream>
+using namespace std;
+
+class A
+{
+public:
+    A() { cout << "A()" << endl; }
+    ~A() { cout << "~A()" << endl; }
+
+};
+
+class B
+{
+public:
+    B() { cout << "B()" << endl; }
+    ~B() { cout << "~B()" << endl; }
+private:
+    A a;
+};
+
+class Test : public A, public B // 派生列表
+{
+public:
+    Test() { cout << "Test()" << endl; }
+    ~Test() { cout << "~Test()" << endl; }
+
+
+private:
+    B ex1;
+    A ex2;
+};
+
+int main()
+{
+    Test ex;
+    return 0;
+}
+
+/*
+运行结果：
+A()    // 初始化对象Test，C继承A,B,于是初始化对象A，A没有继承和成员对象，调用A的构造函数
+A()    // 初始化对象B，B没有继承，B有成员对象A，初始化一个对象A，A没有成员对象，调用A的构造函数
+B()    // 接着上面初始化对象B的过程，调用B的构造函数
+A()    // 接着初始化对象Test的过程，初始化其B类的成员对象，因为B有A成员，调用A的构造函数
+B()    // 接着上面初始化对象B的过程，调用B的构造函数
+A()    // 接着初始化对象Test的过程，初始化其A类的成员对象
+Test() // 调用Test构造函数
+~Test()
+~A()
+~B()
+~A()
+~B()
+~A()
+~A()
+*/
+```
+
+### 深拷贝和浅拷贝的区别
+
+如果一个类拥有资源，该类的对象进行复制时，如果资源重新分配，就是深拷贝，否则就是浅拷贝。
+
+- 深拷贝：该对象和原对象占用不同的内存空间，既拷贝存储在栈空间中的内容，又拷贝存储在堆空间中的内容。
+- 浅拷贝：该对象和原对象占用同一块内存空间，仅拷贝类中位于栈空间中的内容。
+
+当类的成员变量中有指针变量时，最好使用深拷贝。因为当两个对象指向同一块内存空间，如果使用浅拷贝，当其中一个对象的删除后，该块内存空间就会被释放，另外一个对象指向的就是垃圾内存。
+
+**浅拷贝实例**
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+class Test
+{
+private:
+	int *p;
+
+public:
+	Test(int tmp)
+	{
+		this->p = new int(tmp);
+		cout << "Test(int tmp)" << endl;
+	}
+	~Test()
+	{
+		if (p != NULL)
+		{
+			delete p;
+		}
+		cout << "~Test()" << endl;
+	}
+};
+
+int main()
+{
+	Test ex1(10);	
+	Test ex2 = ex1; 
+	return 0;
+}
+/*
+运行结果：
+Test(int tmp)
+~Test()
+*/
+```
+
+说明：上述代码中，类对象 ex1、ex2 实际上是指向同一块内存空间，对象析构时，ex2 先将内存释放了一次，之后 析构对象 ex1 时又将这块已经被释放过的内存再释放一次。对同一块内存空间释放了两次，会导致程序崩溃。
+
+**深拷贝实例**
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+class Test
+{
+private:
+	int *p;
+
+public:
+	Test(int tmp)
+	{
+		p = new int(tmp);
+		cout << "Test(int tmp)" << endl;
+	}
+	~Test()
+	{
+		if (p != NULL)
+		{
+			delete p;
+		}
+		cout << "~Test()" << endl;
+	}
+	Test(const Test &tmp) // 定义拷贝构造函数
+	{
+		p = new int(*tmp.p);
+		cout << "Test(const Test &tmp)" << endl;
+	}
+
+};
+
+int main()
+{
+	Test ex1(10);	
+	Test ex2 = ex1; 
+	return 0;
+}
+/*
+Test(int tmp)
+Test(const Test &tmp)
+~Test()
+~Test()
+*/
+```
+
