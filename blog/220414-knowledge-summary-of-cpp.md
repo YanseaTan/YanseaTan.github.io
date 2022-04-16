@@ -662,7 +662,7 @@ int main()
 上述程序的继承关系如下：（菱形继承）
 
 ```mermaid
-graph RL
+flowchart RL
 A(Derive) --> B(Base2) & C(Base3)
 B & C --> D(Base1)
 ```
@@ -775,7 +775,7 @@ int main()
 ```
 
 ```mermaid
-graph RL
+flowchart RL
 A(Derive) --> B(Base2) & C(Base3)
 B & C -- 虚继承 --> D(Base1)
 ```
