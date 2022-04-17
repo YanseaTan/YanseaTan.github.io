@@ -27,6 +27,10 @@
     - [多重继承时会出现什么状况（菱形继承）？如何解决？](#多重继承时会出现什么状况菱形继承如何解决)
     - [C++ 类对象的初始化顺序](#c-类对象的初始化顺序)
     - [深拷贝和浅拷贝的区别](#深拷贝和浅拷贝的区别)
+  - [语言特性相关](#语言特性相关)
+    - [什么是指针？指针的大小及用法？](#什么是指针指针的大小及用法)
+    - [什么是野指针和悬空指针？](#什么是野指针和悬空指针)
+    - [指针和引用的区别？](#指针和引用的区别)
 
 ## 编译内存相关
 
@@ -947,3 +951,182 @@ Test(const Test &tmp)
 */
 ```
 
+## 语言特性相关
+
+### 什么是指针？指针的大小及用法？
+
+**指针**：指向另外一种类型的复合类型。
+
+**指针的大小**： 在 64 位计算机中，指针占 8 个字节空间。
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+int main(){
+    int *p = nullptr;
+    cout << sizeof(p) << endl; // 8
+
+    char *p1 = nullptr;
+    cout << sizeof(p1) << endl; // 8
+    return 0;
+}
+```
+
+**指针的用法**:
+
+1. 指向普通对象的指针
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+class A
+{
+};
+
+int main()
+{
+    A *p = new A();
+    return 0;
+}
+```
+
+2. 指向常量对象的指针：常量指针
+
+```c++
+#include <iostream>
+using namespace std;
+
+int main(void)
+{
+    const int c_var = 10;
+    const int * p = &c_var;
+    cout << *p << endl;
+    return 0;
+}
+```
+
+3. 指向函数的指针：函数指针
+
+```c++
+#include <iostream>
+using namespace std;
+
+int add(int a, int b){
+    return a + b;
+}
+
+int main(void)
+{
+    int (*fun_p)(int, int);
+    fun_p = add;
+    cout << fun_p(1, 6) << endl;
+    return 0;
+}
+```
+
+4. 指向对象成员的指针，包括指向对象成员函数的指针和指向对象成员变量的指针。
+   特别注意：定义指向成员函数的指针时，要标明指针所属的类。
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+class A
+{
+public:
+    int var1, var2; 
+    int add(){
+        return var1 + var2;
+    }
+};
+
+int main()
+{
+    A ex;
+    ex.var1 = 3;
+    ex.var2 = 4;
+    int *p = &ex.var1; // 指向对象成员变量的指针
+    cout << *p << endl;
+
+    int (A::*fun_p)();
+    fun_p = &A::add; // 指向对象成员函数的指针 fun_p
+    cout << (ex.*fun_p)() << endl;
+    return 0;
+}
+```
+
+5. this 指针：指向类的当前对象的指针常量。
+
+```c++
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class A
+{
+public:
+    void set_name(string tmp)
+    {
+        this->name = tmp;
+    }
+    void set_age(int tmp)
+    {
+        this->age = tmp;
+    }
+    void set_sex(int tmp)
+    {
+        this->sex = tmp;
+    }
+    void show()
+    {
+        cout << "Name: " << this->name << endl;
+        cout << "Age: " << this->age << endl;
+        cout << "Sex: " << this->sex << endl;
+    }
+
+private:
+    string name;
+    int age;
+    int sex;
+};
+
+int main()
+{
+    A *p = new A();
+    p->set_name("Alice");
+    p->set_age(16);
+    p->set_sex(1);
+    p->show();
+
+    return 0;
+}
+```
+
+### 什么是野指针和悬空指针？
+
+野指针：“野指针”是指不确定其指向的指针，未初始化的指针为“野指针”。
+
+```c++
+void *p; 
+// 此时 p 是“野指针”。
+```
+
+悬空指针：若指针指向一块内存空间，当这块内存空间被释放后，该指针依然指向这块内存空间，此时，称该指针为“悬空指针”。
+
+```c++
+void *p = malloc(size);
+free(p); 
+// 此时，p 指向的内存空间已释放， p 就是悬空指针。
+```
+
+### 指针和引用的区别？
+
+- 是否可变：指针所指向的内存空间在程序运行过程中可以改变，而引用所绑定的对象一旦绑定就不能改变。
+- 是否占内存：指针本身在内存中占有内存空间，引用相当于变量的别名，在内存中不占内存空间。（
+- 是否可为空：指针可以为空，但是引用必须绑定对象。
+- 是否能为多级：指针可以有多级，但是引用只能一级。
