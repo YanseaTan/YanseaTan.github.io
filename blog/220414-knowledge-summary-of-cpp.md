@@ -39,6 +39,7 @@
     - [参数传递时，值传递、引用传递、指针传递的区别？](#参数传递时值传递引用传递指针传递的区别)
   - [数据结构与算法相关](#数据结构与算法相关)
     - [STL](#stl)
+    - [vector 底层实现机制](#vector-底层实现机制)
 
 ## 编译内存相关
 
@@ -1654,3 +1655,49 @@ STL 的基本观念就是将数据和操作分离。数据由容器进行管理�
 - deque 在中间位置插入和删除的时间复杂度为 O(N)，在头部和尾部插入和删除的时间复杂度为 O(1)，查找的时间复杂度为 O(1)；
 - list 在任意位置插入和删除的时间复杂度都为 O(1)，查找的时间复杂度为 O(N)；
 - set 和 map 都是通过红黑树实现，因此插入、删除和查找操作的时间复杂度都是 O(log N)。
+
+### vector 底层实现机制
+
+通过分析 vector 容器的源代码不难发现，它就是使用 3 个迭代器（可以理解成指针）来表示的：
+
+```c++
+//_Alloc 表示内存分配器，此参数几乎不需要我们关心
+template <class _Ty, class _Alloc = allocator<_Ty>>
+class vector{
+    ...
+protected:
+    pointer _Myfirst;
+    pointer _Mylast;
+    pointer _Myend;
+};
+```
+
+其中，_Myfirst 指向的是 vector 容器对象的起始字节位置；_Mylast 指向当前最后一个元素的末尾字节；_myend 指向整个 vector 容器所占用内存空间的末尾字节。
+
+通过灵活运用这 3 个迭代器，vector 容器可以轻松的实现诸如首尾标识、大小、容器、空容器判断等几乎所有的功能，比如：
+
+```c++
+template <class _Ty, class _Alloc = allocator<_Ty>>
+class vector{
+public：
+    iterator begin() {return _Myfirst;}
+    iterator end() {return _Mylast;}
+    size_type size() const {return size_type(end() - begin());}
+    size_type capacity() const {return size_type(_Myend - begin());}
+    bool empty() const {return begin() == end();}
+    reference operator[] (size_type n) {return *(begin() + n);}
+    reference front() { return *begin();}
+    reference back() {return *(end()-1);}
+    ...
+};
+```
+
+**vector 扩大容量的本质**
+
+另外需要指明的是，当 vector 的大小和容量相等（size==capacity）也就是满载时，如果再向其添加元素，那么 vector 就需要扩容。vector 容器扩容的过程需要经历以下 3 步：
+
+1. 完全弃用现有的内存空间，重新申请更大的内存空间；
+2. 将旧内存空间中的数据，按原有顺序移动到新的内存空间中；
+3. 最后将旧的内存空间释放。
+
+由此可见，vector 扩容是非常耗时的。为了降低再次分配内存空间时的成本，每次扩容时 vector 都会申请比用户需求量更多的内存空间（这也就是 vector 容量的由来，即 capacity>=size），以便后期使用。
