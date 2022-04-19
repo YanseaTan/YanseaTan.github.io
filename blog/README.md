@@ -1,6 +1,6 @@
 # [YANSEA](https://yansea.cc)/[BLOG](https://yansea.cc/blog)
 
-- [C++ 知识点整理][220414]
+- [C++ 面试知识点整理][220414]
 - [一些逻辑思维题][220410]
 - [GitHub Pages 搭建过程][220317]
 
