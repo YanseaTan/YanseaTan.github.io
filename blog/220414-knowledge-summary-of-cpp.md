@@ -29,7 +29,6 @@
     - [虚函数的实现原理](#虚函数的实现原理)
     - [纯虚函数](#纯虚函数)
     - [虚函数和纯虚函数的区别](#虚函数和纯虚函数的区别)
-    - [单继承和多继承的虚函数表结构](#单继承和多继承的虚函数表结构)
     - [构造函数、析构函数是否可以定义成虚函数？为什么？](#构造函数析构函数是否可以定义成虚函数为什么)
     - [多重继承时会出现什么状况（菱形继承）？如何解决？](#多重继承时会出现什么状况菱形继承如何解决)
     - [C++ 类对象的初始化顺序](#c-类对象的初始化顺序)
@@ -833,6 +832,10 @@ int main()
 }
 ```
 
+C++支持两种多态性：
+  - 编译时多态性：通过函数重载和运算符重载来实现的。
+  - 运行时多态性：通过继承和虚函数来实现的。
+
 ## 类相关
 
 ### 虚函数的实现原理
@@ -895,28 +898,6 @@ int main()
 
 为了解决上述问题，引入了纯虚函数的概念，将函数定义为纯虚函数（方法：virtual ReturnType Function()= 0;），则编译器要求在派生类中必须予以重载以实现多态性。同时含有纯虚拟函数的类称为抽象类，它不能生成对象。这样就很好地解决了上述两个问题。
 
-**相似概念**
-
-- 多态性
-  
-  指相同对象收到不同消息或不同对象收到相同消息时产生不同的实现动作。C++支持两种多态性：编译时多态性，运行时多态性。
-  - 编译时多态性：通过函数重载和运算符重载来实现的。
-  - 运行时多态性：通过继承和虚函数来实现的。
-
-- 虚函数
-  
-  虚函数是在基类中被声明为virtual，并在派生类中重新定义的成员函数，可实现成员函数的动态重载。纯虚函数的声明有着特殊的语法格式：virtual 返回值类型成员函数名（参数表）=0；
-
-  请注意，纯虚函数应该只有声明，没有具体的定义，即使给出了纯虚函数的定义也会被编译器忽略。
-
-- 抽象类
-  
-  包含纯虚函数的类称为抽象类。由于抽象类包含了没有定义的纯虚函数，所以不能定义抽象类的对象，类中只有接口，没有具体的实现方法。在C++中，我们可以把只能用于被继承而不能直接创建对象的类设置为抽象类（Abstract Class）。继承纯虚函数的派生类，如果没有完全实现基类纯虚函数，依然是抽象类，不能实例化对象。
-
-  之所以要存在抽象类，最主要是因为它具有不确定因素。我们把那些类中的确存在，但是在父类中无法确定具体实现的成员函数称为纯虚函数。纯虚函数是一种特殊的虚函数，它只有声明，没有具体的定义。抽象类中至少存在一个纯虚函数；存在纯虚函数的类一定是抽象类。存在纯虚函数是成为抽象类的充要条件。
-
-  子类必须继承父类的纯虚函数，并全部实现后，才能创建子类的对象。
-
 ### 虚函数和纯虚函数的区别
 
 除定义过程中的区别外，应注意如下两者作用的区别：
@@ -925,163 +906,6 @@ int main()
 - 定义他为虚函数是为了允许用基类的指针来调用子类的这个函数。
 - 定义一个函数为纯虚函数，才代表函数没有被实现。
 - 定义纯虚函数是为了实现一个接口，起到一个规范的作用，规范继承这个类的程序员必须实现这个函数。
-
-### 单继承和多继承的虚函数表结构
-
-**编译器处理虚函数表：**
-
-- 编译器将虚函数表的指针放在类的实例对象的内存空间中，该对象调用该类的虚函数时，通过指针找到虚函数表，根据虚函数表中存放的虚函数的地址找到对应的虚函数。
-- 如果派生类没有重新定义基类的虚函数 A，则派生类的虚函数表中保存的是基类的虚函数 A 的地址，也就是说基类和派生类的虚函数 A 的地址是一样的。
-- 如果派生类重写了基类的某个虚函数 B，则派生的虚函数表中保存的是重写后的虚函数 B 的地址，也就是说虚函数 B 有两个版本，分别存放在基类和派生类的虚函数表中。
-- 如果派生类重新定义了新的虚函数 C，派生类的虚函数表保存新的虚函数 C 的地址。
-
-单继承无虚函数覆盖的情况：
-
-```c++
-#include <iostream>
-using namespace std;
-
-class Base
-{
-public:
-    virtual void B_fun1() { cout << "Base::B_fun1()" << endl; }
-    virtual void B_fun2() { cout << "Base::B_fun2()" << endl; }
-    virtual void B_fun3() { cout << "Base::B_fun3()" << endl; }
-};
-
-class Derive : public Base
-{
-public:
-    virtual void D_fun1() { cout << "Derive::D_fun1()" << endl; }
-    virtual void D_fun2() { cout << "Derive::D_fun2()" << endl; }
-    virtual void D_fun3() { cout << "Derive::D_fun3()" << endl; }
-};
-int main()
-{
-    Base *p = new Derive();
-    p->B_fun1(); // Base::B_fun1()
-    return 0;
-}
-```
-
-单继承有虚函数覆盖的情况：
-
-```c++
-#include <iostream>
-using namespace std;
-
-class Base
-{
-public:
-    virtual void fun1() { cout << "Base::fun1()" << endl; }
-    virtual void B_fun2() { cout << "Base::B_fun2()" << endl; }
-    virtual void B_fun3() { cout << "Base::B_fun3()" << endl; }
-};
-
-class Derive : public Base
-{
-public:
-    virtual void fun1() { cout << "Derive::fun1()" << endl; }
-    virtual void D_fun2() { cout << "Derive::D_fun2()" << endl; }
-    virtual void D_fun3() { cout << "Derive::D_fun3()" << endl; }
-};
-int main()
-{
-    Base *p = new Derive();
-    p->fun1(); // Derive::fun1()
-    return 0;
-}
-```
-
-多继承无虚函数覆盖的情况：
-
-```c++
-#include <iostream>
-using namespace std;
-
-class Base1
-{
-public:
-    virtual void B1_fun1() { cout << "Base1::B1_fun1()" << endl; }
-    virtual void B1_fun2() { cout << "Base1::B1_fun2()" << endl; }
-    virtual void B1_fun3() { cout << "Base1::B1_fun3()" << endl; }
-};
-class Base2
-{
-public:
-    virtual void B2_fun1() { cout << "Base2::B2_fun1()" << endl; }
-    virtual void B2_fun2() { cout << "Base2::B2_fun2()" << endl; }
-    virtual void B2_fun3() { cout << "Base2::B2_fun3()" << endl; }
-};
-class Base3
-{
-public:
-    virtual void B3_fun1() { cout << "Base3::B3_fun1()" << endl; }
-    virtual void B3_fun2() { cout << "Base3::B3_fun2()" << endl; }
-    virtual void B3_fun3() { cout << "Base3::B3_fun3()" << endl; }
-};
-
-class Derive : public Base1, public Base2, public Base3
-{
-public:
-    virtual void D_fun1() { cout << "Derive::D_fun1()" << endl; }
-    virtual void D_fun2() { cout << "Derive::D_fun2()" << endl; }
-    virtual void D_fun3() { cout << "Derive::D_fun3()" << endl; }
-};
-
-int main(){
-    Base1 *p = new Derive();
-    p->B1_fun1(); // Base1::B1_fun1()
-    return 0;
-}
-```
-
-多继承有虚函数覆盖的情况：
-
-```c++
-#include <iostream>
-using namespace std;
-
-class Base1
-{
-public:
-    virtual void fun1() { cout << "Base1::fun1()" << endl; }
-    virtual void B1_fun2() { cout << "Base1::B1_fun2()" << endl; }
-    virtual void B1_fun3() { cout << "Base1::B1_fun3()" << endl; }
-};
-class Base2
-{
-public:
-    virtual void fun1() { cout << "Base2::fun1()" << endl; }
-    virtual void B2_fun2() { cout << "Base2::B2_fun2()" << endl; }
-    virtual void B2_fun3() { cout << "Base2::B2_fun3()" << endl; }
-};
-class Base3
-{
-public:
-    virtual void fun1() { cout << "Base3::fun1()" << endl; }
-    virtual void B3_fun2() { cout << "Base3::B3_fun2()" << endl; }
-    virtual void B3_fun3() { cout << "Base3::B3_fun3()" << endl; }
-};
-
-class Derive : public Base1, public Base2, public Base3
-{
-public:
-    virtual void fun1() { cout << "Derive::fun1()" << endl; }
-    virtual void D_fun2() { cout << "Derive::D_fun2()" << endl; }
-    virtual void D_fun3() { cout << "Derive::D_fun3()" << endl; }
-};
-
-int main(){
-    Base1 *p1 = new Derive();
-    Base2 *p2 = new Derive();
-    Base3 *p3 = new Derive();
-    p1->fun1(); // Derive::fun1()
-    p2->fun1(); // Derive::fun1()
-    p3->fun1(); // Derive::fun1()
-    return 0;
-}
-```
 
 ### 构造函数、析构函数是否可以定义成虚函数？为什么？
 
