@@ -18,8 +18,12 @@
     - [2016. 增量元素之间的最大差值](#2016-增量元素之间的最大差值)
   - [字符串](#字符串)
     - [344. 反转字符串](#344-反转字符串)
+  - [链表](#链表)
+    - [234. 回文链表](#234-回文链表)
   - [哈希表](#哈希表)
     - [350. 两个数组的交集 II](#350-两个数组的交集-ii)
+  - [位运算](#位运算)
+    - [461. 汉明距离](#461-汉明距离)
   - [技巧](#技巧)
     - [双指针](#双指针)
     - [贪心](#贪心)
@@ -450,6 +454,39 @@ public:
 
 <br><br><br>
 
+## 链表
+
+### 234. 回文链表
+
+给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。
+
+遍历，然后使用双指针：
+
+```C++
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        vector<int> nums;
+        while (head)
+        {
+            nums.push_back(head->val);
+            head = head->next;
+        }
+        for (int i = 0; i < nums.size() / 2; i++)
+        {
+            int j = nums.size() - 1 - i;
+            if (nums[i] != nums[j])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+```
+
+<br><br><br>
+
 ## 哈希表
 
 ### 350. 两个数组的交集 II
@@ -484,6 +521,32 @@ public:
             }
         }
         return intersection;
+    }
+};
+```
+
+<br><br><br>
+
+## 位运算
+
+### 461. 汉明距离
+
+两个整数之间的 汉明距离 指的是这两个数字对应二进制位不同的位置的数目。
+
+给你两个整数 x 和 y，计算并返回它们之间的汉明距离。
+
+```c++
+class Solution {
+public:
+    int hammingDistance(int x, int y) {
+        int z = x ^ y;
+        int ans = 0;
+        while (z)
+        {
+            ans += z & 1;
+            z >>= 1;
+        }
+        return ans;
     }
 };
 ```
