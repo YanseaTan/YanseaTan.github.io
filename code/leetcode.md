@@ -21,6 +21,9 @@
     - [344. 反转字符串](#344-反转字符串)
   - [链表](#链表)
     - [234. 回文链表](#234-回文链表)
+  - [二叉树](#二叉树)
+    - [543. 二叉树的直径](#543-二叉树的直径)
+    - [617. 合并二叉树](#617-合并二叉树)
   - [栈](#栈)
     - [20. 有效的括号](#20-有效的括号)
   - [哈希表](#哈希表)
@@ -30,6 +33,8 @@
   - [技巧](#技巧)
     - [双指针](#双指针)
     - [贪心](#贪心)
+    - [动态规划](#动态规划)
+    - [深度优先搜索](#深度优先搜索)
 
 <br><br><br>
 
@@ -173,6 +178,8 @@ public:
     }
 };
 ```
+
+<br><br><br>
 
 ### 53. 最大子数组和
 
@@ -518,6 +525,68 @@ public:
 
 <br><br><br>
 
+## 二叉树
+
+### 543. 二叉树的直径
+
+给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的最大值。这条路径可能穿过也可能不穿过根结点。
+
+深度优先搜索：
+
+```c++
+class Solution {
+public:
+    int ans = 0;                    // 类成员变量
+
+    int depth(TreeNode* root)
+    {
+        if (root == nullptr)
+        {
+            return 0;
+        }
+        int left = depth(root->left);
+        int right = depth(root->right);
+        ans = max(ans, left + right);
+        return max(left, right) + 1;
+    }
+
+    int diameterOfBinaryTree(TreeNode* root) {
+        int tmp = depth(root);      // 临时的变量，只为了对 ans 进行操做
+        return ans;
+    }
+};
+```
+
+<br><br><br>
+
+### 617. 合并二叉树
+
+给你两棵二叉树： root1 和 root2 。想象一下，当你将其中一棵覆盖到另一棵之上时，两棵树上的一些节点将会重叠（而另一些不会）。你需要将这两棵树合并成一棵新二叉树。合并的规则是：如果两个节点重叠，那么将这两个节点的值相加作为合并后节点的新值；否则，不为 null 的节点将直接作为新二叉树的节点。返回合并后的二叉树。
+
+自己，深度优先搜索：
+
+```c++
+class Solution {
+public:
+    TreeNode* mergeTrees(TreeNode* root1, TreeNode* root2) {
+        if (root1 == nullptr)
+        {
+            return root2;
+        }
+        if (root2 == nullptr)
+        {
+            return root1;
+        }
+        root1->val = root1->val + root2->val;
+        root1->left = mergeTrees(root1->left, root2->left);
+        root1->right = mergeTrees(root1->right, root2->right);
+        return root1;
+    }
+};
+```
+
+<br><br><br>
+
 ## 栈
 
 ### 20. 有效的括号
@@ -660,3 +729,13 @@ public:
 [122. 买卖股票的最佳时机 II](#122-买卖股票的最佳时机-ii)
 
 [2016. 增量元素之间的最大差值](#2016-增量元素之间的最大差值)
+
+### 动态规划
+
+[53. 最大子数组和](#53-最大子数组和)
+
+### 深度优先搜索
+
+[543. 二叉树的直径](#543-二叉树的直径)
+
+[617. 合并二叉树](#617-合并二叉树)
