@@ -22,6 +22,8 @@
   - [链表](#链表)
     - [234. 回文链表](#234-回文链表)
   - [二叉树](#二叉树)
+    - [94. 二叉树的中序遍历](#94-二叉树的中序遍历)
+    - [101. 对称二叉树](#101-对称二叉树)
     - [543. 二叉树的直径](#543-二叉树的直径)
     - [617. 合并二叉树](#617-合并二叉树)
   - [栈](#栈)
@@ -527,6 +529,85 @@ public:
 
 ## 二叉树
 
+### 94. 二叉树的中序遍历
+
+给定一个二叉树的根节点 root ，返回 它的中序遍历。
+
+自己，深度优先搜索，递归：
+
+```c++
+class Solution {
+public:
+    vector<int> ans;
+
+    void dfs(TreeNode* root1)
+    {
+        if (root1 == nullptr)
+        {
+            return;
+        }
+        dfs(root1->left);
+        ans.push_back(root1->val);
+        dfs(root1->right);
+    }
+
+    vector<int> inorderTraversal(TreeNode* root) {
+        if (root != nullptr)
+        {
+            dfs(root);
+        }
+        return ans;
+    }
+};
+```
+
+<br><br><br>
+
+### 101. 对称二叉树
+
+给你一个二叉树的根节点 root ， 检查它是否轴对称。
+
+自己，深度优先搜索：
+
+```c++
+class Solution {
+public:
+    bool areSymmetric(TreeNode* root1, TreeNode* root2)
+    {
+        if (root1 == nullptr && root2 == nullptr)
+        {
+            return true;
+        }
+        else if (root1 == nullptr && root2 != nullptr || root1 != nullptr && root2 == nullptr)
+        {
+            return false;
+        }
+        else
+        {
+            if (root1->val != root2->val)
+            {
+                return false;
+            }
+            if (areSymmetric(root1->left, root2->right) && areSymmetric(root1->right, root2->left))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool isSymmetric(TreeNode* root) {
+        if (areSymmetric(root->left, root->right))
+        {
+            return true;
+        }
+        return false;
+    }
+};
+```
+
+<br><br><br>
+
 ### 543. 二叉树的直径
 
 给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的最大值。这条路径可能穿过也可能不穿过根结点。
@@ -735,6 +816,10 @@ public:
 [53. 最大子数组和](#53-最大子数组和)
 
 ### 深度优先搜索
+
+[94. 二叉树的中序遍历](#94-二叉树的中序遍历)
+
+[101. 对称二叉树](#101-对称二叉树)
 
 [543. 二叉树的直径](#543-二叉树的直径)
 
