@@ -13,17 +13,21 @@
     - [66. 加一](#66-加一)
     - [122. 买卖股票的最佳时机 II](#122-买卖股票的最佳时机-ii)
     - [136. 只出现一次的数字](#136-只出现一次的数字)
+    - [169. 多数元素](#169-多数元素)
     - [189. 轮转数组](#189-轮转数组)
     - [217. 存在重复元素](#217-存在重复元素)
     - [283. 移动零](#283-移动零)
+    - [448. 找到所有数组中消失的数字](#448-找到所有数组中消失的数字)
     - [2016. 增量元素之间的最大差值](#2016-增量元素之间的最大差值)
   - [字符串](#字符串)
     - [344. 反转字符串](#344-反转字符串)
   - [链表](#链表)
+    - [160. 相交链表](#160-相交链表)
     - [234. 回文链表](#234-回文链表)
   - [二叉树](#二叉树)
     - [94. 二叉树的中序遍历](#94-二叉树的中序遍历)
     - [101. 对称二叉树](#101-对称二叉树)
+    - [226. 翻转二叉树](#226-翻转二叉树)
     - [543. 二叉树的直径](#543-二叉树的直径)
     - [617. 合并二叉树](#617-合并二叉树)
   - [栈](#栈)
@@ -31,6 +35,7 @@
   - [哈希表](#哈希表)
     - [350. 两个数组的交集 II](#350-两个数组的交集-ii)
   - [位运算](#位运算)
+    - [338. 比特位计数](#338-比特位计数)
     - [461. 汉明距离](#461-汉明距离)
   - [技巧](#技巧)
     - [双指针](#双指针)
@@ -328,6 +333,26 @@ public:
 
 <br><br><br>
 
+### 169. 多数元素
+
+给定一个大小为 n 的数组 nums ，返回其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
+
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+
+排序，取中间：
+
+```c++
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        return nums[nums.size() / 2];
+    }
+};
+```
+
+<br><br><br>
+
 ### 189. 轮转数组
 
 给你一个数组，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。
@@ -437,6 +462,61 @@ public:
 
 <br><br><br>
 
+### 448. 找到所有数组中消失的数字
+
+给你一个含 n 个整数的数组 nums ，其中 nums[i] 在区间 [1, n] 内。请你找出所有在 [1, n] 范围内但没有出现在 nums 中的数字，并以数组的形式返回结果。
+
+官方，原地修改：
+
+```c++
+class Solution {
+public:
+    vector<int> findDisappearedNumbers(vector<int>& nums) {
+        vector<int> ans;
+        int n = nums.size();
+        for (int num : nums)
+        {
+            int tmp = (num - 1) % n;
+            nums[tmp] += n;
+        }
+        for (int  i = 0; i < n; ++i)
+        {
+            if (nums[i] <= n)
+            {
+                ans.push_back(i + 1);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+自己，哈希集合：
+
+```c++
+class Solution {
+public:
+    vector<int> findDisappearedNumbers(vector<int>& nums) {
+        vector<int> ans;
+        unordered_set<int> tmp;
+        for (int i = 0; i < nums.size(); ++i)
+        {
+            tmp.insert(nums[i]);
+        }
+        for (int i = 1; i <= nums.size(); ++i)
+        {
+            if (!tmp.count(i))
+            {
+                ans.push_back(i);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+<br><br><br>
+
 ### 2016. 增量元素之间的最大差值
 
 给你一个下标从 0 开始的整数数组 nums ，该数组的大小为 n ，请你计算 nums[j] - nums[i] 能求得的最大差值，其中 0 <= i < j < n 且 nums[i] < nums[j] 。返回最大差值。如果不存在满足要求的 i 和 j ，返回 -1 。
@@ -495,6 +575,39 @@ public:
 <br><br><br>
 
 ## 链表
+
+### 160. 相交链表
+
+给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。
+
+官方，哈希表：
+
+```c++
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        unordered_set<ListNode*> tmp;
+        ListNode *head = headA;
+        while (head)
+        {
+            tmp.insert(head);
+            head = head->next;
+        }
+        head = headB;
+        while (head)
+        {
+            if (tmp.count(head))
+            {
+                return head;
+            }
+            head = head->next;
+        }
+        return nullptr;
+    }
+};
+```
+
+<br><br><br>
 
 ### 234. 回文链表
 
@@ -602,6 +715,32 @@ public:
             return true;
         }
         return false;
+    }
+};
+```
+
+<br><br><br>
+
+### 226. 翻转二叉树
+
+给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
+
+递归：
+
+```c++
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (root == nullptr)
+        {
+            return nullptr;
+        }
+        // 不定义临时变量的话 leetcode 会报错
+        TreeNode* right = invertTree(root->right);
+        TreeNode* left = invertTree(root->left);
+        root->left = right;
+        root->right = left;
+        return root;
     }
 };
 ```
@@ -768,6 +907,33 @@ public:
 <br><br><br>
 
 ## 位运算
+
+### 338. 比特位计数
+
+给你一个整数 n ，对于 0 <= i <= n 中的每个 i ，计算其二进制表示中 1 的个数 ，返回一个长度为 n + 1 的数组 ans 作为答案。
+
+```c++
+class Solution {
+public:
+    vector<int> countBits(int n) {
+        // 注意 vector 需要初始化
+        vector<int> ans(n + 1);
+        for (int i = 0; i <= n; ++i)
+        {
+            // 注意这边需要传值
+            int tmp = i;
+            while (tmp)
+            {
+                ans[i] += tmp & 1;
+                tmp >>= 1;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+<br><br><br>
 
 ### 461. 汉明距离
 
