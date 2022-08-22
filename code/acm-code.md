@@ -15,6 +15,7 @@
     - [字符移位](#字符移位)
     - [扭蛋机](#扭蛋机)
     - [数字转字符串](#数字转字符串)
+    - [字符集合](#字符集合)
   - [动态规划](#动态规划)
     - [上台阶](#上台阶)
     - [三角形](#三角形)
@@ -516,6 +517,55 @@ int main() {
             }
         }
         cout << dp[0] << endl;
+    }
+    return 0;
+}
+```
+
+<br><br><br>
+
+### 字符集合
+
+输入一个字符串，求出该字符串包含的字符集合，按照字母输入的顺序输出。
+
+数据范围：输入的字符串长度满足 1 <= n <= 100，且只包含大小写字母，区分大小写。
+
+本题有多组输入。
+
+输入描述：
+
+> 每组数据输入一个字符串，字符串最大长度为100，且只包含字母，不可能为空串，区分大小写。
+
+输出描述：
+
+> 每组数据一行，按字符串原有的字符顺序，输出字符集合，即重复出现并靠后的字母不输出。
+
+自己用的无序哈希集合：
+
+```c++
+#include<iostream>
+#include<string>
+#include<unordered_set>
+using namespace std;
+int main()
+{
+    unordered_set<char> uset;
+    string tmp;
+    while(cin >> tmp)
+    {
+        for (int i = 0; i < tmp.size(); ++i)
+        {
+            uset.emplace(tmp[i]);
+        }
+        for (int i = 0; i < tmp.size(); ++i)
+        {
+            if (uset.count(tmp[i]))
+            {
+                cout << tmp[i];
+                uset.erase(tmp[i]);
+            }
+        }
+        cout << endl;
     }
     return 0;
 }
