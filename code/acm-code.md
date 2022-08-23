@@ -37,6 +37,7 @@
     - [求解f(n)](#求解fn)
     - [猜数](#猜数)
     - [坐标移动](#坐标移动)
+    - [计算字符重新排列数](#计算字符重新排列数)
   - [ACM 模式输入输出练习](#acm-模式输入输出练习)
 
 <br><br><br>
@@ -1390,6 +1391,62 @@ int main()
     cout << x << ',' << y << endl;
     return 0;
 }
+```
+
+<br><br><br>
+
+### 计算字符重新排列数
+
+给一串可能重复的大写字母，输出可能的排列情况
+
+```c++
+// we have defined the necessary header files here for this problem.
+// If additional header files are needed in your program, please import here.
+#include<vector>
+#include<algorithm>
+
+int jiecheng(int a)
+{
+    int num = 1;
+    for (int i = 2; i <= a; ++i)
+    {
+        num *= i;
+    }
+    return num;
+}
+
+int main()
+{
+    // please define the C++ input here. For example: int a,b; cin>>a>>b;;
+    // please finish the function body here.
+    // please define the C++ output here. For example:cout<<____<<endl;
+    vector<char> s;
+    char tmp;
+    while (cin >> tmp)
+    {
+        s.push_back(tmp);
+    }
+    sort(s.begin(), s.end());
+    int length = s.size();
+    int ans = jiecheng(length);
+    int count = 1;
+    for (int i = 0; i < length - 1; ++i)
+    {
+        if (s[i + 1] == s[i])
+        {
+            ++count;
+        }
+        else if (s[i + 1] != s[i] && count > 1)
+        {
+            ans /= jiecheng(count);
+            count = 1;
+        }
+    }
+    ans /= jiecheng(count);
+    cout << ans;
+    return 0;
+}
+
 ```
 
 <br><br><br>
