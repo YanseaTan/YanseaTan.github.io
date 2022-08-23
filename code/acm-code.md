@@ -10,6 +10,7 @@
     - [赛马](#赛马)
     - [查找数字](#查找数字)
     - [找到1的组数](#找到1的组数)
+    - [质数因子](#质数因子)
   - [字符串](#字符串)
     - [进制转换](#进制转换)
     - [字符移位](#字符移位)
@@ -17,9 +18,13 @@
     - [数字转字符串](#数字转字符串)
     - [字符集合](#字符集合)
     - [计算某字符出现次数](#计算某字符出现次数)
+    - [提取不重复的整数](#提取不重复的整数)
+    - [句子逆序](#句子逆序)
+    - [字符串排序](#字符串排序)
   - [动态规划](#动态规划)
     - [上台阶](#上台阶)
     - [三角形](#三角形)
+    - [01背包](#01背包)
   - [贪心](#贪心)
     - [机器人跳跃问题](#机器人跳跃问题)
     - [连续最大和](#连续最大和)
@@ -31,6 +36,7 @@
     - [搬圆桌](#搬圆桌)
     - [求解f(n)](#求解fn)
     - [猜数](#猜数)
+    - [坐标移动](#坐标移动)
   - [ACM 模式输入输出练习](#acm-模式输入输出练习)
 
 <br><br><br>
@@ -343,6 +349,34 @@ int main(){
 
 <br><br><br>
 
+### 质数因子
+
+输入一个正整数，按照从小到大的顺序输出它的所有质因子（重复的也要列举）（如180的质因子为2 2 3 3 5 ）
+
+```c++
+#include<iostream>
+using namespace std;
+
+int main()
+{
+    int x = 0;
+    cin >> x;
+    for (int i = 2; i * i <= x; ++i)
+    {
+        if (x % i == 0)
+        {
+            cout << i << ' ';
+            x /= i;
+            i = 1;
+        }
+    }
+    cout << x;
+    return 0;
+}
+```
+
+<br><br><br>
+
 ## 字符串
 
 ### 进制转换
@@ -614,6 +648,119 @@ int main()
 
 <br><br><br>
 
+### 提取不重复的整数
+
+输入一个 int 型整数，按照从右向左的阅读顺序，返回一个不含重复数字的新的整数。
+
+保证输入的整数最后一位不是 0 。
+
+输入实例：
+
+> 9876673
+
+输出示例：
+
+> 37689
+
+自己：
+
+```c++
+#include <iostream>
+#include <string>
+using namespace std;
+ 
+int main()
+{
+    string num;
+    cin >> num;
+    int nums[10] = {0};
+    for (int i = num.size() - 1; i >= 0; --i)
+    {
+        if (nums[num[i] - '0'] == 0)
+        {
+            cout << num[i];
+            nums[num[i] - '0']++;
+        }
+    }
+    return 0;
+}
+```
+
+<br><br><br>
+
+### 句子逆序
+
+将一个英文语句以单词为单位逆序排放。例如“I am a boy”，逆序排放后为“boy a am I”
+
+所有单词之间用一个空格隔开，语句中除了英文字母外，不再包含其他字符
+
+```c++
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+int main()
+{
+    string s;
+    vector<string> ss;
+    while (cin >> s)
+    {
+        ss.push_back(s);
+    }
+    for (int i = ss.size() - 1; i >= 0; --i)
+    {
+        cout << ss[i] << ' ';
+    }
+    return 0;
+}
+```
+
+<br><br><br>
+
+### 字符串排序
+
+给定 n 个字符串，请对 n 个字符串按照字典序排列。
+
+输入描述：
+
+> 输入第一行为一个正整数n(1≤n≤1000),下面n行为n个字符串(字符串长度≤100),字符串中只含有大小写字母。
+
+输出描述：
+
+> 数据输出n行，输出结果为按照字典序排列的字符串。
+
+自己：
+
+```c++
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main()
+{
+    int n = 0;
+    cin >> n;
+    string s;
+    vector<string> svec;
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> s;
+        svec.push_back(s);
+    }
+    sort(svec.begin(), svec.end());
+    for (auto x : svec)
+    {
+        cout << x << endl;
+    }
+    return 0;
+}
+```
+
+<br><br><br>
+
 ## 动态规划
 
 ### 上台阶
@@ -693,6 +840,65 @@ int main(){
     while(cin>>n){
         cout<<res(n)<<endl;
     }
+    return 0;
+}
+```
+
+<br><br><br>
+
+### 01背包
+
+已知一个背包最多能容纳体积之和为v的物品，现有 n 个物品，第 i 个物品的体积为 v_i, 重量为 w_i，求当前背包最多能装多大重量的物品?
+
+输入描述：
+
+> 第一行输入两个正整数 v 和 n。表示背包最大体积和物品数量。后续 n 行每行输入两个正整数 v_i 和 w_i，表示每个物品的体积和重量
+
+输出描述：
+
+> 输出背包能装的最大重量
+
+动态规划：
+
+```c++
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int main()
+{
+    int v, n;
+    cin >> v >> n;
+    vector<int> val, weight;
+    // 初始化都塞进去一个零
+    val.push_back(0);
+    weight.push_back(0);
+    int tmp = 0;
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> tmp;
+        val.push_back(tmp);
+        cin >> tmp;
+        weight.push_back(tmp);
+    }
+    // 初始化一个二维 vector 数组，使其都为零，一共有 n + 1 行，v + 1 列
+    vector<vector<int>> dp(n + 1, vector<int>(v + 1, 0));
+    // 从只放第一个物品，背包剩余容量为 v 式开始递推，自右向左，自上而下
+    for (int i = 1; i <= n; ++i)
+    {
+        for (int j = v; j > 0; --j)
+        {
+            if (j >= val[i])
+            {
+                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - val[i]] + weight[i]);
+            }
+            else
+            {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+    cout << dp[n][v];
     return 0;
 }
 ```
@@ -1101,6 +1307,87 @@ int main(){
         else if(guessNum > num) cout <<"Too big"<<endl;
         else cout << count << endl;
     }
+    return 0;
+}
+```
+
+<br><br><br>
+
+### 坐标移动
+
+开发一个坐标计算工具， A表示向左移动，D表示向右移动，W表示向上移动，S表示向下移动。从（0,0）点开始移动，从输入字符串里面读取一些坐标，并将最终输入结果输出到输出文件里面。
+
+输入描述：
+
+> 合法坐标为A(或者D或者W或者S) + 数字（两位以内），坐标之间以;分隔。非法坐标点需要进行丢弃。如AA10;  A1A;  $%$;  YAD; 等。
+
+输出描述：
+
+> 最终坐标，以逗号分隔。
+
+自己：
+
+```c++
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main()
+{
+    int x = 0;
+    int y = 0;
+    string s;
+    cin >> s;
+    vector<char> tmp;
+    for (int i = 0; i < s.size(); ++i)
+    {
+        tmp.push_back(s[i]);
+        if (s[i] == ';')
+        {
+            if (tmp.size() == 3 && tmp[1] >= '0' && tmp[1] <= '9')
+            {
+                if (tmp[0] == 'A')
+                {
+                    x -= (tmp[1] - '0');
+                }
+                else if (tmp[0] == 'D')
+                {
+                    x += (tmp[1] - '0');
+                }
+                else if (tmp[0] == 'W')
+                {
+                    y += (tmp[1] - '0');
+                }
+                else if (tmp[0] == 'S')
+                {
+                    y -= (tmp[1] - '0');
+                }
+            }
+            else if (tmp.size() == 4 && tmp[1] >= '0' && tmp[1] <= '9' && tmp[2] >= '0' && tmp[2] <= '9')
+            {
+                if (tmp[0] == 'A')
+                {
+                    x -= ((tmp[1] - '0') * 10 + (tmp[2] - '0'));
+                }
+                else if (tmp[0] == 'D')
+                {
+                    x += ((tmp[1] - '0') * 10 + (tmp[2] - '0'));
+                }
+                else if (tmp[0] == 'W')
+                {
+                    y += ((tmp[1] - '0') * 10 + (tmp[2] - '0'));
+                }
+                else if (tmp[0] == 'S')
+                {
+                    y -= ((tmp[1] - '0') * 10 + (tmp[2] - '0'));
+                }
+            }
+            tmp.clear();
+            continue;
+        }
+    }
+    cout << x << ',' << y << endl;
     return 0;
 }
 ```
