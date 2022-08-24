@@ -21,6 +21,9 @@
     - [提取不重复的整数](#提取不重复的整数)
     - [句子逆序](#句子逆序)
     - [字符串排序](#字符串排序)
+    - [密码验证合格程序](#密码验证合格程序)
+    - [简单密码](#简单密码)
+    - [删除字符串中出现次数最少的字符](#删除字符串中出现次数最少的字符)
   - [动态规划](#动态规划)
     - [上台阶](#上台阶)
     - [三角形](#三角形)
@@ -755,6 +758,243 @@ int main()
     for (auto x : svec)
     {
         cout << x << endl;
+    }
+    return 0;
+}
+```
+
+<br><br><br>
+
+### 密码验证合格程序
+
+密码要求:
+
+1. 长度超过8位
+
+2. 包括大小写字母.数字.其它符号,以上四种至少三种
+
+3. 不能有长度大于2的包含公共元素的子串重复 （注：其他符号不含空格或换行）
+
+输入描述：
+
+> 一组字符串。
+
+输出描述：
+
+> 如果符合要求输出：OK，否则输出NG
+
+自己：
+
+```c++
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main()
+{
+    string s;
+    while (cin >> s)
+    {
+        if (s.size() < 9)
+        {
+            cout << "NG" << endl;
+        }
+        else
+        {
+            int countN = 0;
+            int countA = 0;
+            int counta = 0;
+            int countO = 0;
+            for (auto x : s)
+            {
+                if (x >= '0' && x <= '9')
+                {
+                    countN = 1;
+                }
+                else if (x >= 'A' && x <= 'Z')
+                {
+                    countA = 1;
+                }
+                else if (x >= 'a' && x <= 'z')
+                {
+                    counta = 1;
+                }
+                else
+                {
+                    countO = 1;
+                }
+            }
+            int count = countA + counta + countN + countO;
+            
+            bool flag = true;
+            for (int i = 0; i < s.size() - 6; ++i)
+            {
+                for (int j = i + 3; j < s.size() - 3; ++j)
+                {
+                    if (s[j] == s[i])
+                    {
+                        if ((s[j + 1] == s[i + 1]) && (s[j + 2] == s[i + 2]))
+                        {
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+                if (flag == false)
+                {
+                    break;
+                }
+            }
+            
+            if (count > 2 && flag)
+            {
+                cout << "OK" << endl;
+            }
+            else
+            {
+                cout << "NG" << endl;
+            }
+        }
+    }
+    return 0;
+}
+```
+
+<br><br><br>
+
+### 简单密码
+
+现在有一种密码变换算法。
+
+九键手机键盘上的数字与字母的对应： 1--1， abc--2, def--3, ghi--4, jkl--5, mno--6, pqrs--7, tuv--8 wxyz--9, 0--0，把密码中出现的小写字母都变成九键键盘对应的数字，如：a 变成 2，x 变成 9。
+
+而密码中出现的大写字母则变成小写之后往后移一位，如：X ，先变成小写，再往后移一位，变成了 y ，例外：Z 往后移是 a 。
+
+数字和其它的符号都不做变换。
+
+自己：
+
+```c++
+#include<iostream>
+#include<string>
+using namespace std;
+
+int main()
+{
+    string s;
+    cin >> s;
+    for (char x : s)
+    {
+        if (x >= 'a' && x <= 'c')
+        {
+            cout << '2';
+        }
+        else if (x >= 'd' && x <= 'f')
+        {
+            cout << '3';
+        }
+        else if (x >= 'g' && x <= 'i')
+        {
+            cout << '4';
+        }
+        else if (x >= 'j' && x <= 'l')
+        {
+            cout << '5';
+        }
+        else if (x >= 'm' && x <= 'o')
+        {
+            cout << '6';
+        }
+        else if (x >= 'p' && x <= 's')
+        {
+            cout << '7';
+        }
+        else if (x >= 't' && x <= 'v')
+        {
+            cout << '8';
+        }
+        else if (x >= 'w' && x <= 'z')
+        {
+            cout << '9';
+        }
+        else if (x >= 'A' && x <= 'Y')
+        {
+            cout << (char)(x + 33);
+        }
+        else if (x == 'Z')
+        {
+            cout << 'a';
+        }
+        else
+        {
+            cout << x;
+        }
+    }
+    return 0;
+}
+```
+
+<br><br><br>
+
+### 删除字符串中出现次数最少的字符
+
+实现删除字符串中出现次数最少的字符，若出现次数最少的字符有多个，则把出现次数最少的字符都删除。输出删除这些单词后的字符串，字符串中其它字符保持原来的顺序。
+
+数据范围：输入的字符串长度满足 1 ≤ n ≤ 20  ，保证输入的字符串中仅出现小写字母
+
+自己：
+
+```c++
+#include<iostream>
+#include<vector>
+using namespace std;
+ 
+int main()
+{
+    string s;
+    cin >> s;
+    int nums[128] = {0};
+    for (auto x : s)
+    {
+        nums[x]--;
+    }
+    int minN = -20;
+    vector<int> id;
+    for (int i = 0; i < 128; ++i)
+    {
+        if (nums[i] == 0)
+        {
+            continue;
+        }
+        if (nums[i] > minN)
+        {
+            minN = nums[i];
+        }
+    }
+    for (int i = 0; i < 128; ++i)
+    {
+        if (minN == nums[i])
+        {
+            id.push_back(i);
+        }
+    }
+    bool flag = false;
+    for (char x : s)
+    {
+        for (int y : id)
+        {
+            if (x == y)
+            {
+                flag = true;
+                break;
+            }
+        }
+        if (flag)
+        {
+            flag = false;
+            continue;
+        }
+        cout << x;
     }
     return 0;
 }
