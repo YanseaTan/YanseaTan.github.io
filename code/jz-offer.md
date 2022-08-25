@@ -18,6 +18,7 @@
     - [JZ15 二进制中1的个数](#jz15-二进制中1的个数)
     - [?JZ19 正则表达式匹配](#jz19-正则表达式匹配)
     - [?JZ20 表示数值的字符串](#jz20-表示数值的字符串)
+    - [JZ38 字符串的排列](#jz38-字符串的排列)
   - [链表](#链表)
     - [JZ6 从尾到头打印链表](#jz6-从尾到头打印链表)
     - [JZ18 删除链表的节点](#jz18-删除链表的节点)
@@ -515,8 +516,278 @@ public:
 
 请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。
 
-```c++
+数值（按顺序）可以分成以下几个部分：
 
+1. 若干空格
+2. 一个 小数 或者 整数
+3. （可选）一个 'e' 或 'E' ，后面跟着一个 整数
+4. 若干空格
+
+小数（按顺序）可以分成以下几个部分：
+
+1. （可选）一个符号字符（'+' 或 '-'）
+2. 下述格式之一：
+   1. 至少一位数字，后面跟着一个点 '.'
+   2. 至少一位数字，后面跟着一个点 '.' ，后面再跟着至少一位数字
+   3. 一个点 '.' ，后面跟着至少一位数字
+
+整数（按顺序）可以分成以下几个部分：
+
+1. （可选）一个符号字符（'+' 或 '-'）
+2. 至少一位数字
+
+部分数值列举如下：
+
+> ["+100", "5e2", "-123", "3.1416", "-1E-16", "0123"]
+
+部分非数值列举如下：
+
+> ["12e", "1a3.14", "1.2.3", "+-5", "12e+5.4"]
+
+自己，创建好判断正整数、负整数、小数以及含e（E）数的函数：
+
+```c++
+class Solution {
+public:
+    bool iszz(string s)
+    {
+        if (s[0] == '+' && s.size() > 1 || s[0] >= '0' && s[0] <= '9')
+        {
+            for (int i = 1; i < s.size(); ++i)
+            {
+                if (s[i] < '0' || s[i] > '9')
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    bool isfz(string s)
+    {
+        if (s[0] == '-' && s.size() > 1)
+        {
+            for (int i = 1; i < s.size(); ++i)
+            {
+                if (s[i] < '0' || s[i] > '9')
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    bool isxs(string s)
+    {
+        int cnt = 0;
+        string left;
+        string right;
+        for (int i = 0; i < s.size(); ++i)
+        {
+            if (cnt == 0 && s[i] != '.')
+            {
+                left.push_back(s[i]);
+            }
+            if (cnt == 1)
+            {
+                right.push_back(s[i]);
+            }
+            if (s[i] == '.')
+            {
+                ++cnt;
+            }
+            if (cnt > 1)
+            {
+                return false;
+            }
+        }
+        if (!cnt)
+        {
+            return false;
+        }
+        if (left.empty() && !right.empty() && iszz(right) && right[0] != '+')
+        {
+            return true;
+        }
+        if (!left.empty() && (iszz(left) || isfz(left)) && right.empty())
+        {
+            return true;
+        }
+        if (!left.empty() && (iszz(left) || isfz(left) || (left.size() == 1 && (left[0] == '+' || left[0] == '-'))) && !right.empty() && iszz(right))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool ise(string s)
+    {
+        int cnt = 0;
+        string left;
+        string right;
+        for (int i = 0; i < s.size(); ++i)
+        {
+            if (s[i] == 'e' || s[i] == 'E')
+            {
+                ++cnt;
+            }
+            if (cnt > 1)
+            {
+                return false;
+            }
+            if (cnt == 0 && s[i] != 'e' && s[i] != 'E')
+            {
+                left.push_back(s[i]);
+            }
+            if (cnt == 1 && s[i] != 'e' && s[i] != 'E')
+            {
+                right.push_back(s[i]);
+            }
+        }
+        if (!cnt)
+        {
+            return false;
+        }
+        if (left.empty() || right.empty())
+        {
+            return false;
+        }
+        if ((iszz(left) || isfz(left) || isxs(left)) && (iszz(right) || isfz(right)))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    string deleteSpace(string s)
+    {
+        for (int i = 0; i < s.size();)
+        {
+            if (s[i] == ' ')
+            {
+                s.erase(s.begin());
+            }
+            else
+            {
+                break;
+            }
+        }
+        for (int i = s.size() - 1; i >= 0; --i)
+        {
+            if (s[i] == ' ')
+            {
+                s.erase(s.begin() + i);
+            }
+            else
+            {
+                break;
+            }
+        }
+        return s;
+    }
+
+    bool isNumber(string s)
+    {
+        string ss = deleteSpace(s);
+        cout << ss;
+        for (int i = 0; i < ss.size(); ++i)
+        {
+            if (ss[i] == ' ')
+            {
+                return false;
+            }
+        }
+        if (ss.empty())
+        {
+            return false;
+        }
+        if (iszz(ss) || isfz(ss) || isxs(ss) || ise(ss))
+        {
+            return true;
+        }
+        return false;
+    }
+};
+```
+
+<br><br><br>
+
+### JZ38 字符串的排列
+
+输入一个字符串，打印出该字符串中字符的所有排列。你可以以任意顺序返回这个字符串数组，但里面不能有重复元素。
+
+示例：
+
+> 输入：s = "abc"
+> 输出：["abc","acb","bac","bca","cab","cba"]
+
+回溯，dfs，无序哈希集合：
+
+```c++
+class Solution {
+public:
+    void dfs(int x, string s, set<string>& uset)
+    {
+        if (x == s.size())
+        {
+            uset.emplace(s);
+        }
+        for (int i = x; i < s.size(); ++i)
+        {
+            swap(s[x], s[i]);
+            dfs(x + 1, s, uset);    //递归下一个位置
+            swap(s[x], s[i]);       //回溯
+        }
+    }
+
+    vector<string> permutation(string s) {
+        set<string> uset;
+        dfs(0, s, uset);
+        vector<string> ans;
+        for (set<string>::iterator i=uset.begin(); i!=uset.end(); ++i)
+        {
+            ans.push_back(*i);
+        }
+        return ans;
+    }
+};
+```
+
+利用哈希集合进行剪枝优化：
+
+```c++
+class Solution {
+public:
+    void dfs(int x, string s, vector<string>& ans)
+    {
+        if (x == s.size())
+        {
+            ans.push_back(s);
+        }
+        set<int> ss;
+        for (int i = x; i < s.size(); ++i)
+        {
+            if (ss.find(s[i]) != ss.end())      // 如果这次循环出现相同字母，则剪枝
+            {
+                continue;
+            }
+            ss.emplace(s[i]);
+            swap(s[x], s[i]);
+            dfs(x + 1, s, ans);     // 递归下一个位置
+            swap(s[x], s[i]);       // 回溯
+        }
+    }
+
+    vector<string> permutation(string s) {
+        vector<string> ans;
+        dfs(0, s, ans);
+        return ans;
+    }
+};
 ```
 
 <br><br><br>
@@ -1238,11 +1509,15 @@ public:
 
 [JZ13 机器人的运动范围](#jz13-机器人的运动范围)
 
+[JZ38 字符串的排列](#jz38-字符串的排列)
+
 ### ？深度优先搜索 DFS
 
 [JZ12 矩阵中的路径](#jz12-矩阵中的路径)
 
 [JZ13 机器人的运动范围](#jz13-机器人的运动范围)
+
+[JZ38 字符串的排列](#jz38-字符串的排列)
 
 ### ？广度优先搜索 BFS
 
