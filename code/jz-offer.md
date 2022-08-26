@@ -13,12 +13,19 @@
     - [JZ21 调整数组顺序使奇数位于偶数前面](#jz21-调整数组顺序使奇数位于偶数前面)
     - [JZ29 顺时针打印矩阵](#jz29-顺时针打印矩阵)
     - [JZ39 数组中出现次数超过一半的数字](#jz39-数组中出现次数超过一半的数字)
+    - [JZ42 连续子数组的最大和](#jz42-连续子数组的最大和)
+    - [JZ44 数字序列中某一位的数字](#jz44-数字序列中某一位的数字)
+    - [JZ47 礼物的最大价值](#jz47-礼物的最大价值)
+    - [JZ49 丑数](#jz49-丑数)
   - [字符串](#字符串)
     - [JZ5 替换空格](#jz5-替换空格)
     - [JZ15 二进制中1的个数](#jz15-二进制中1的个数)
     - [?JZ19 正则表达式匹配](#jz19-正则表达式匹配)
-    - [?JZ20 表示数值的字符串](#jz20-表示数值的字符串)
+    - [JZ20 表示数值的字符串](#jz20-表示数值的字符串)
     - [JZ38 字符串的排列](#jz38-字符串的排列)
+    - [JZ45 把数组排成最小的数](#jz45-把数组排成最小的数)
+    - [JZ46 把数字翻译成字符串](#jz46-把数字翻译成字符串)
+    - [JZ48 最长不含重复字符的子字符串](#jz48-最长不含重复字符的子字符串)
   - [链表](#链表)
     - [JZ6 从尾到头打印链表](#jz6-从尾到头打印链表)
     - [JZ18 删除链表的节点](#jz18-删除链表的节点)
@@ -441,7 +448,7 @@ public:
 
 <br><br><br>
 
-### 连续子数组的最大和
+### JZ42 连续子数组的最大和
 
 输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。
 
@@ -500,6 +507,146 @@ public:
             ans = max(ans, nums[i]);
         }
         return ans;
+    }
+};
+```
+
+<br><br><br>
+
+### JZ44 数字序列中某一位的数字
+
+数字以0123456789101112131415…的格式序列化到一个字符序列中。在这个序列中，第5位（从下标0开始计数）是5，第13位是1，第19位是4，等等。
+
+请写一个函数，求任意第n位对应的数字。
+
+自己，暴力：
+
+```c++
+class Solution {
+public:
+    int findNthDigit(int n) {
+        if (n >= 0 && n <= 9) return n;
+        long nums[9] = {10, 190, 2890, 38890, 488890, 5888890, 68888890, 788888890, 8888888890};
+        int tmp = 0;
+        int id = 0;
+        int left = 0;
+        int ten = 1;
+        int num = 0;
+        string s;
+        char c;
+        int ans = 0;
+        for (int i = 1; i < 9; ++i)
+        {
+            if (n < nums[i])
+            {
+                tmp = n - nums[i - 1];
+                id = tmp / (i + 1);
+                left = tmp % (i + 1);
+                for (int j = 0; j < i; ++j)
+                {
+                    ten *= 10;
+                }
+                num = ten + id;
+                s = to_string(num);
+                c = s[left];
+                ans = c - '0';
+                break;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+<br><br><br>
+
+### JZ47 礼物的最大价值
+
+在一个 m*n 的棋盘的每一格都放有一个礼物，每个礼物都有一定的价值（价值大于 0）。你可以从棋盘的左上角开始拿格子里的礼物，并每次向右或者向下移动一格、直到到达棋盘的右下角。给定一个棋盘及其上面的礼物的价值，请计算你最多能拿到多少价值的礼物？
+
+示例：
+
+> 输入: 
+> [
+>  [1,3,1],
+>  [1,5,1],
+>  [4,2,1]
+> ]
+> 输出: 12
+> 解释: 路径 1→3→5→2→1 可以拿到最多价值的礼物
+
+题解，动态规划：
+
+```c++
+class Solution {
+public:
+    int maxValue(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        // 先把第一行第一列算出来，作为后续状态转移方程的初始解
+        for (int i = 1; i < m; ++i)
+        {
+            grid[i][0] += grid[i - 1][0];
+        }
+        for (int i = 1; i < n; ++i)
+        {
+            grid[0][i] += grid[0][i - 1];
+        }
+        for (int i = 1; i < m; ++i)
+        {
+            for (int j = 1; j < n; ++j)
+            {
+                grid[i][j] = grid[i][j] + max(grid[i - 1][j], grid[i][j - 1]);
+            }
+        }
+        return grid[m - 1][n - 1];
+    }
+};
+```
+
+<br><br><br>
+
+### JZ49 丑数
+
+我们把只包含质因子 2、3 和 5 的数称作丑数（Ugly Number）。求按从小到大的顺序的第 n 个丑数。
+
+示例：
+
+> 输入: n = 10
+> 输出: 12
+> 解释: 1, 2, 3, 4, 5, 6, 8, 9, 10, 12 是前 10 个丑数。
+
+题解，动态规划：
+
+```c++
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        vector<int> dp(n + 1);
+        dp[1] = 1;
+        int a = 1;
+        int b = 1;
+        int c = 1;
+        for (int i = 2; i <= n; ++i)
+        {
+            int n2 = dp[a] * 2;
+            int n3 = dp[b] * 3;
+            int n5 = dp[c] * 5;
+            dp[i] = min(n2, min(n3, n5));
+            if (dp[i] == n2)
+            {
+                ++a;
+            }
+            if (dp[i] == n3)
+            {
+                ++b;
+            }
+            if (dp[i] == n5)
+            {
+                ++c;
+            }
+        }
+        return dp[n];
     }
 };
 ```
@@ -850,6 +997,149 @@ public:
     vector<string> permutation(string s) {
         vector<string> ans;
         dfs(0, s, ans);
+        return ans;
+    }
+};
+```
+
+<br><br><br>
+
+### JZ45 把数组排成最小的数
+
+输入一个非负整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。
+
+- 输出结果可能非常大，所以你需要返回一个字符串而不是整数
+- 拼接起来的数字可能会有前导 0，最后结果不需要去掉前导 0
+
+示例：
+
+> 输入: [3,30,34,5,9]
+> 输出: "3033459"
+
+自己，暴力比较：
+
+```c++
+class Solution {
+public:
+    void compare(string& a, string& b)
+    {
+        string sa = a + b;
+        string sb = b + a;
+        if (sa > sb)
+        {
+            swap(a, b);
+        }
+    }
+
+    string minNumber(vector<int>& nums) {
+        string num;
+        vector<string> ss;
+        for (int x : nums)
+        {
+            num = to_string(x);
+            ss.push_back(num);
+        }
+        for (int i = 0; i < ss.size() - 1; ++i)
+        {
+            for (int j = i + 1; j < ss.size(); ++j)
+            {
+                compare(ss[i], ss[j]);
+            }
+        }
+        num.clear();
+        for (string x : ss)
+        {
+            num += x;
+        }
+        return num;
+    }
+};
+```
+
+<br><br><br>
+
+### JZ46 把数字翻译成字符串
+
+给定一个数字，我们按照如下规则把它翻译为字符串：0 翻译成 “a” ，1 翻译成 “b”，……，11 翻译成 “l”，……，25 翻译成 “z”。一个数字可能有多个翻译。请编程实现一个函数，用来计算一个数字有多少种不同的翻译方法。
+
+示例：
+
+> 输入: 12258
+> 输出: 5
+> 解释: 12258有5种不同的翻译，分别是"bccfi", "bwfi", "bczi", "mcfi"和"mzi"
+
+自己：动态规划
+
+```c++
+class Solution {
+public:
+    int translateNum(int num) {
+        string s = to_string(num);
+        int nums[12];   // int num 最多是十位数
+        nums[0] = 1;
+        nums[1] = 1;
+        string tmp;
+        for (int i = 1; i < s.size(); ++i)
+        {
+            tmp.push_back(s[i - 1]);
+            tmp.push_back(s[i]);
+            if (tmp < "26" && tmp >= "10")
+            {
+                nums[i + 1] = nums[i - 1] + nums[i];
+            }
+            else
+            {
+                nums[i + 1] = nums[i];
+            }
+            tmp.clear();
+        }
+        return nums[s.size()];
+    }
+};
+```
+ 
+<br><br><br>
+
+### JZ48 最长不含重复字符的子字符串
+
+请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。
+
+示例：
+
+> 输入: "abcabcbb"
+> 输出: 3 
+> 解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+ 
+自己，哈希，暴力：
+
+```c++
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        set<char> cset;
+        int length = s.size();
+        if (length == 0)
+        {
+            return 0;
+        }
+        int ans = 1;
+        int tmp = 1;
+        for (int i = 0; i < length - 1; ++i)
+        {
+            tmp = 1;
+            cset.clear();
+            cset.emplace(s[i]);
+            for (int j = i + 1; j < length; ++j)
+            {
+                if (cset.count(s[j]))
+                {
+                    break;
+                }
+                cset.emplace(s[j]);
+                ++tmp;
+            }
+            ans = max(ans, tmp);
+        }
         return ans;
     }
 };
@@ -1550,6 +1840,14 @@ public:
 
 [JZ19 正则表达式匹配](#jz19-正则表达式匹配)
 
+[JZ42 连续子数组的最大和](#jz42-连续子数组的最大和)
+
+[JZ45 把数组排成最小的数](#jz45-把数组排成最小的数)
+
+[JZ47 礼物的最大价值](#jz47-礼物的最大价值)
+
+[JZ49 丑数](#jz49-丑数)
+
 ### 二分查找
 
 [JZ11 旋转数组的最小数字](#jz11-旋转数组的最小数字)
@@ -1561,6 +1859,8 @@ public:
 [JZ22 链表中倒数第k个节点](#jz22-链表中倒数第k个节点)
 
 [JZ24 反转链表](#jz24-反转链表)
+
+[JZ42 连续子数组的最大和](#jz42-连续子数组的最大和)
 
 ### 模拟
 
