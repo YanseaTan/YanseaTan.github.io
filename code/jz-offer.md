@@ -441,6 +441,71 @@ public:
 
 <br><br><br>
 
+### 连续子数组的最大和
+
+输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。
+
+要求时间复杂度为O(n)。
+
+示例：
+
+> 输入: nums = [-2,1,-3,4,-1,2,1,-5,4]
+> 输出: 6
+
+自己，双指针：
+
+```c++
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int ans = nums[0];
+        int length = nums.size();
+        if (length == 1)
+        {
+            return nums[0];
+        }
+        int left = 0;
+        int right = 1;
+        int tmp = nums[left];
+        while (right < length)
+        {
+            if (nums[right] > tmp && tmp < 0)
+            {
+                left = right;
+                tmp = nums[left];
+            }
+            else
+            {
+                tmp += nums[right];
+            }
+            ++right;
+            ans = max(ans, tmp);
+        }
+        return ans;
+    }
+};
+```
+
+题解，动态规划：
+
+```c++
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int ans = nums[0];
+        for (int i = 1; i < nums.size(); ++i)
+        {
+            // nums[i] 更新为以原来 nums[i] 为结尾时最大的前 i 项和，只要判断前一个是否大于零就行
+            nums[i] += max(nums[i - 1], 0);
+            ans = max(ans, nums[i]);
+        }
+        return ans;
+    }
+};
+```
+
+<br><br><br>
+
 ## 字符串
 
 ### JZ5 替换空格
@@ -512,7 +577,7 @@ public:
 
 <br><br><br>
 
-### ?JZ20 表示数值的字符串
+### JZ20 表示数值的字符串
 
 请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。
 
