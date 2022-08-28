@@ -24,6 +24,7 @@
     - [密码验证合格程序](#密码验证合格程序)
     - [简单密码](#简单密码)
     - [删除字符串中出现次数最少的字符](#删除字符串中出现次数最少的字符)
+    - [DNA匹配](#dna匹配)
   - [动态规划](#动态规划)
     - [上台阶](#上台阶)
     - [三角形](#三角形)
@@ -41,6 +42,7 @@
     - [猜数](#猜数)
     - [坐标移动](#坐标移动)
     - [计算字符重新排列数](#计算字符重新排列数)
+    - [集合P](#集合p)
   - [ACM 模式输入输出练习](#acm-模式输入输出练习)
 
 <br><br><br>
@@ -1002,6 +1004,59 @@ int main()
 
 <br><br><br>
 
+### DNA匹配
+
+有一种特殊的DNA，仅仅由核酸A和T组成，长度为n，顺次连接
+
+科学家有一种新的手段，可以改变这种DNA。每一次，科学家可以交换该DNA上两个核酸的位置，也可以将某个特定位置的核酸修改为另一种核酸。
+
+现在有一个DNA，科学家希望将其改造成另一种DNA，希望你计算最少的操作次数。
+
+输入描述：
+
+> 输入包含两行，第一行为初始的DNA，第二行为目标DNA，保证长度相同。
+
+输出描述：
+
+> 输出最少的操作次数
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    string a;
+    string b;
+    cin >> a >> b;
+    int cntA = 0;
+    int cntT = 0;
+    for (int i = 0; i < a.size(); ++i)
+    {
+        if (a[i] == b[i])
+        {
+            continue;
+        }
+        else
+        {
+            if (a[i] == 'A')
+            {
+                ++cntA;
+            }
+            else
+            {
+                ++cntT;
+            }
+        }
+    }
+    cout << max(cntA, cntT);
+    return 0;
+}
+```
+
+<br><br><br>
+
 ## 动态规划
 
 ### 上台阶
@@ -1687,6 +1742,60 @@ int main()
     return 0;
 }
 
+```
+
+<br><br><br>
+
+### 集合P
+
+P为给定的二维平面整数点集。定义 P 中某点x，如果x满足 P 中任意点都不在 x 的右上方区域内（横纵坐标都大于x），则称其为“最大的”。求出所有“最大的”点的集合。（所有点的横坐标和纵坐标都不重复, 坐标轴范围在[0, 1e9) 内）
+
+输入描述：
+
+> 第一行输入点集的个数 N， 接下来 N 行，每行两个数字代表点的 X 轴和 Y 轴。 对于 50%的数据,  1 <= N <= 10000; 对于 100%的数据, 1 <= N <= 500000;
+
+输出描述：
+
+> 输出“最大的” 点集合， 按照 X 轴从小到大的方式输出，每行两个数字分别代表点的 X 轴和 Y轴。
+
+自己，哈希映射：
+
+```c++
+#include <iostream>
+#include <map>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+    int n = 0;
+    cin >> n;
+    int x = 0;
+    int y = 0;
+    map<int ,int> imap;
+    vector<int> ivec;
+    for (int i = 0; i < n; ++i)
+    {
+        cin >> x >> y;
+        imap[y] = x;
+        ivec.push_back(y);
+    }
+    // 从大到小排序
+    sort(ivec.begin(), ivec.end(), greater<int>());
+    cout << imap[ivec[0]] << ' ' << ivec[0] << endl;
+    int tmp = imap[ivec[0]];
+    for (int i = 1; i < ivec.size(); ++i)
+    {
+        if (imap[ivec[i]] > tmp)
+        {
+        cout << imap[ivec[i]] << ' ' << ivec[i] << endl;
+        tmp = imap[ivec[i]];
+        }
+    }
+    return 0;
+}
 ```
 
 <br><br><br>
