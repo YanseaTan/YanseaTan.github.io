@@ -26,6 +26,7 @@
     - [JZ45 把数组排成最小的数](#jz45-把数组排成最小的数)
     - [JZ46 把数字翻译成字符串](#jz46-把数字翻译成字符串)
     - [JZ48 最长不含重复字符的子字符串](#jz48-最长不含重复字符的子字符串)
+    - [JZ50 第一个只出现一次的字符](#jz50-第一个只出现一次的字符)
   - [链表](#链表)
     - [JZ6 从尾到头打印链表](#jz6-从尾到头打印链表)
     - [JZ18 删除链表的节点](#jz18-删除链表的节点)
@@ -1141,6 +1142,51 @@ public:
             ans = max(ans, tmp);
         }
         return ans;
+    }
+};
+```
+
+<br><br><br>
+
+### JZ50 第一个只出现一次的字符
+
+在字符串 s 中找出第一个只出现一次的字符。如果没有，返回一个单空格。 s 只包含小写字母。
+
+哈希映射：
+
+```c++
+class Solution {
+public:
+    char firstUniqChar(string s) {
+        int l = s.size();
+        if (l == 0)
+        {
+            return ' ';
+        }
+        if (l == 1)
+        {
+            return s[0];
+        }
+        map<char, bool> cmap;
+        for (char c : s)
+        {
+            if (cmap.count(c))
+            {
+                cmap[c] = false;
+            }
+            else
+            {
+                cmap[c] = true;
+            }
+        }
+        for (char c : s)
+        {
+            if (cmap[c])
+            {
+                return c;
+            }
+        }
+        return ' ';
     }
 };
 ```
