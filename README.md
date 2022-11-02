@@ -8,8 +8,6 @@ Welcome to ***yansea.cc*** ! This is Hailong's personal website, who will post s
 
 Master of Civil Engineering in Tongji, Shanghai
 
-Glodon Product Marketing Assistant
-
 Project in development:
 
 - [Qt-based concrete bending test data processing software](https://github.com/YanseaTan/bending-data)
