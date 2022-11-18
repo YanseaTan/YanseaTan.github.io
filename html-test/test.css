@@ -7,8 +7,6 @@ body {
     margin: 0;
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-left: 200px;
-    padding-right: 200px;
     background-color: #f1f1f1;
 }
 
@@ -91,6 +89,13 @@ body {
     margin-top: 40px;
 }
 
+@media screen and (orientation: landscape) {
+    body {
+        padding-left: 200px;
+        padding-right: 200px;
+    }
+}
+
 @media screen and (max-width: 1200px) {
     .leftcolumn, .rightcolumn {
         width: 100%;
@@ -103,5 +108,12 @@ body {
     .topnav a {
         float: none;
         width: 100%;
+    }
+}
+
+@media screen and (orientation: portrait) {
+    body {
+        padding-left: 10px;
+        padding-right: 10px;
     }
 }
