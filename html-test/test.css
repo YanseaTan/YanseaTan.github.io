@@ -1,8 +1,3 @@
-@font-face {
-    font-family: scp;
-    src: url(SourceCodePro-Medium.otf.woff2);
-}
-
 * {
     box-sizing: border-box;
 }
