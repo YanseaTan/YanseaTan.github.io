@@ -1,0 +1,103 @@
+@font-face {
+    font-family: scp;
+    src: url(SourceCodePro-Medium.otf.woff2);
+}
+
+@font-face {
+    font-family: smiley;
+    src: url(SmileySans-Oblique.ttf.woff2);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: scp, monospace;
+    margin: 0;
+    padding: 10px;
+    background-color: #f1f1f1;
+}
+
+.header {
+    background-color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #a1afc9;
+}
+
+.topnav a {
+    font-family: smiley, monospace;
+    font-size: 20px;
+    float: left;
+    display: block;
+    color: #161823;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.topnav a:hover:not(.active) {
+    background-color: #727e95;
+    color: #f0f0f4;
+}
+
+.active {
+    background-color: #425066;
+    color: #f0f0f4;
+}
+
+.leftcolumn {
+    float: left;
+    width: 75%;
+}
+
+.rightcolumn {
+    float: left;
+    width: 25%;
+    padding-left: 20px;
+}
+
+.fakeimg {
+    background-color: #aaa;
+    width: 100%;
+    padding: 20px;
+}
+
+.card {
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.footer {
+    text-align: center;
+    background-color: #ddd;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+@media screen and (max-width: 800px) {
+    .leftcolumn, .rightcolumn {
+        width: 100%;
+        /* 去除 .rightcolumn 左侧多余 padding */
+        padding: 0;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .topnav a {
+        float: none;
+        width: 100%;
+    }
+}

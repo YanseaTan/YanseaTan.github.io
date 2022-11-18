@@ -2,7 +2,7 @@
 
 Welcome to ***yansea.cc*** ! This is Hailong's personal website, who will post some articles about study and daily life here :)
 
-[[ Blog ]](./blog/) · [[ Code ]](./code/) · [[ Github ]](https://github.com/YanseaTan)
+[[ Blog ]](./blog/) · [[ Code ]](./code/) · [[ Github ]](https://github.com/YanseaTan) · [[Html-Test]](./html-test/test.html)
 
 ### -- [ Resume ] --
 
