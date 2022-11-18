@@ -79,11 +79,8 @@ body {
 
 .footer {
     text-align: center;
-    background-color: #ddd;
-    box-shadow: 0px 4px 8px rgb(197, 197, 197);
-    bottom: 20px;
-    padding: 20px;
-    margin-top: 20px;
+    bottom: 0px;
+    margin-top: 40px;
 }
 
 @media screen and (max-width: 1600px) {
