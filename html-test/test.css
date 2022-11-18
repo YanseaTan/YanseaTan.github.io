@@ -7,8 +7,8 @@ body {
     margin: 0;
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-left: 400px;
-    padding-right: 400px;
+    padding-left: 200px;
+    padding-right: 200px;
     background-color: #f1f1f1;
 }
 
@@ -91,7 +91,7 @@ body {
     margin-top: 40px;
 }
 
-@media screen and (max-width: 1600px) {
+@media screen and (max-width: 1200px) {
     .leftcolumn, .rightcolumn {
         width: 100%;
         /* 去除 .rightcolumn 左侧多余 padding */
@@ -99,7 +99,7 @@ body {
     }
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 800px) {
     .topnav a {
         float: none;
         width: 100%;
