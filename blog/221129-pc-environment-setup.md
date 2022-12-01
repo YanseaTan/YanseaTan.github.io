@@ -4,9 +4,11 @@
 
 ## 工具
 
-VSCode 下载链接 az*.net 替换为 `vscode.cdn.azure.cn`，记得勾选右键扩展
+### VSCode
 
-github ssh 相关：
+下载链接 az*.net 替换为 `vscode.cdn.azure.cn`，记得勾选右键扩展
+
+### github ssh
 
 `ssh-keygen -t rsa -C "yanseatan@163.com"`
 
@@ -15,6 +17,14 @@ win: `clip < ~/.ssh/id_rsa.pub`
 mac: `pbcopy < ~/.ssh/id_rsa.pub`
 
 `ssh -T git@github.com`
+
+### QT
+
+[下载器地址](https://mirrors.tuna.tsinghua.edu.cn/qt/official_releases/online_installers/)
+
+下载器设置中添加用户镜像源：`https://mirrors.tuna.tsinghua.edu.cn/qt/online/qtsdkrepository/windows_x86/root/qt/` 提升下载速度
+
+安装时选中 MinGW 组件就够了，Tools 里基本也都不用选
 
 ## C++
 
