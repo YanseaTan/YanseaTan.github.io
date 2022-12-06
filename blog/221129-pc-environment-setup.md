@@ -20,7 +20,7 @@ mac: `pbcopy < ~/.ssh/id_rsa.pub`
 
 ### QT
 
-[下载器地址](https://mirrors.tuna.tsinghua.edu.cn/qt/official_releases/online_installers/)
+[下载器地址](https://download.qt.io/official_releases/online_installers/)
 
 下载器设置中添加用户镜像源：`https://mirrors.tuna.tsinghua.edu.cn/qt/online/qtsdkrepository/windows_x86/root/qt/` 提升下载速度
 
