@@ -8,7 +8,9 @@
 
 下载链接 az*.net 替换为 `vscode.cdn.azure.cn`，记得勾选右键扩展
 
-### github ssh
+### git
+
+创建 SSH：
 
 `ssh-keygen -t rsa -C "yanseatan@163.com"`
 
@@ -17,6 +19,10 @@ win: `clip < ~/.ssh/id_rsa.pub`
 mac: `pbcopy < ~/.ssh/id_rsa.pub`
 
 `ssh -T git@github.com`
+
+克隆仓库地址写法：
+
+`git clone git@github.com:YanseaTan/policy-client.git`
 
 ### QT
 
