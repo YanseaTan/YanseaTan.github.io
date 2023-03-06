@@ -1,4 +1,4 @@
-# PC 环境搭建
+# 系统环境搭建
 
 *Summarized on 2022.11.29 by [YanseaTan](https://yansea.cc)*
 
@@ -6,7 +6,13 @@
 
 ### VSCode
 
+下载提速：
+
 下载链接 az*.net 替换为 `vscode.cdn.azure.cn`，记得勾选右键扩展
+
+使用 `code .` 打开文件夹：
+
+Shift + Command + P，调起命令窗口，输入 `Shell Command`，下方出现 Install 'code' command in PATH 选项，点击以安装
 
 ### git
 
