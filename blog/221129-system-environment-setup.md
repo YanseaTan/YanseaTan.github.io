@@ -36,8 +36,6 @@ mac: `pbcopy < ~/.ssh/id_rsa.pub`
 
 下载器设置中添加用户镜像源：`https://mirrors.tuna.tsinghua.edu.cn/qt/online/qtsdkrepository/windows_x86/root/qt/` 提升下载速度
 
-安装时选中 MinGW 组件就够了，Tools 里基本也都不用选
-
 ## C++
 
 添加 MinGW 的 bin 子目录到 PATH 环境变量中
