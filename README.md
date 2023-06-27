@@ -20,6 +20,7 @@ Email: yanseatan@163.com
 
 ### -- [[ Blog ]](./blog/) --
 
+- [适用于 Linux 的 Windows 子系统][230627]
 - [使用 QT 时的相关问题和解决方案][230106]
 - [期货交易知识][221201]
 - [系统环境搭建][221129]
@@ -27,6 +28,7 @@ Email: yanseatan@163.com
 - [一些逻辑思维题][220410]
 - [GitHub Pages 搭建过程][220317]
 
+[230627]:./blog/230627-windows-subsystem-for-linux
 [230106]:./blog/230106-qt-related-issues-and-solutions
 [221201]:./blog/221201-knowledge-of-futures-trading
 [221129]:./blog/221129-system-environment-setup
