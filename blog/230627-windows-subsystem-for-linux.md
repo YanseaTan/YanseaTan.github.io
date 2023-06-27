@@ -2,17 +2,25 @@
 
 *Summarized on 2023.06.27 by [YanseaTan](https://yansea.cc)*
 
-## 安装环境
+## 安装 Linux
 
-以管理员身份打开 PowerShell，输入
+以管理员身份打开 PowerShell，输入(默认安装 Ubuntu)
 
 `wsl --install`
 
-重启后创建用户名和密码，随后输入
+使系统使用发行版的首选包管理器定期更新和升级包
 
 `sudo apt update && sudo apt upgrade`
 
-使系统使用发行版的首选包管理器定期更新和升级包
+## 卸载 Linux
+
+查看当前环境安装的 wsl
+
+`wsl --list`
+
+注销（卸载）当前安装的 wsl
+
+`wsl --unregister LinuxName`
 
 ## 安装软件
 
