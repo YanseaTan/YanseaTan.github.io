@@ -23,6 +23,6 @@
 
 ### Release 版本封装打包
 
-利用 Qt 自带工具，进入 exe 文件目录，输入：`windeployqt --release *.exe`
+利用 Qt 自带工具，进入 exe 文件目录，输入：`windeployqt --release *.exe`。
 
 然后再将其他必要文件拷贝至该目录即可。
