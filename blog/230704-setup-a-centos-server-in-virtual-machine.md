@@ -53,6 +53,8 @@
 
 `yum install devtoolset-7-gcc*`
 
+`yum install devtoolset-7-gdb`
+
 `scl enable devtoolset-7 bash`
 
 ### netstat
@@ -114,17 +116,17 @@
 ]
 ```
 
-点击 build 进行编译，编译完成后将必要的配置文件（xml，json）以及运行库文件（so）拷贝至 build/policyserver/ 目录下，随后即可选择 target 并运行。
+点击 build 进行编译，编译完成后将必要的配置文件（xml、json、cfg 文件夹等）以及运行库文件（so）拷贝至 build/policyserver/ 目录下，随后即可选择 target 并运行。
 
 ## 打开服务器网络端口
 
 通过如下命令查看对应窗口是否打开。
 
-`firewall-cmd --query-port=30662/tcp`
+`firewall-cmd --query-port=8089/tcp`
 
 打开端口。
 
-`firewall-cmd --zone=public --add-port=30662/tcp --permanent`
+`firewall-cmd --zone=public --add-port=8089/tcp --permanent`
 
 重启防火墙。
 
