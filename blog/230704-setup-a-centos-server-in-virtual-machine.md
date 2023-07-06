@@ -11,6 +11,7 @@
     - [cmake3](#cmake3)
     - [gcc 7.3.1](#gcc-731)
     - [netstat](#netstat)
+    - [git](#git)
   - [使用 vscode 进行 SSH 连接](#使用-vscode-进行-ssh-连接)
   - [编译过程](#编译过程)
   - [打开服务器网络端口](#打开服务器网络端口)
@@ -49,17 +50,21 @@
 
 ### gcc 7.3.1
 
-`yum install centos-release-scl`
+`yum install -y centos-release-scl`
 
-`yum install devtoolset-7-gcc*`
+`yum install -y devtoolset-7-gcc*`
 
-`yum install devtoolset-7-gdb`
+`yum install -y devtoolset-7-gdb`
 
 `scl enable devtoolset-7 bash`
 
 ### netstat
 
-`yum install net-tools`
+`yum install -y net-tools`
+
+### git
+
+`yum install -y git`
 
 ## 使用 vscode 进行 SSH 连接
 
