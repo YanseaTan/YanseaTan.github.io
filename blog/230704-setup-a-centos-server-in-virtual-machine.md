@@ -28,13 +28,23 @@
 
 重启网络服务。
 
-`sudo service network restart`
+`service network restart`
 
 输入`ip addr`查看 ip 地址。
+
+若重启网络服务失败，首先查看 VM 网络相关服务（VMware DHCP Service，VMware NAT Service）是否在运行，如果在运行则尝试先关闭 NetworkManager 服务。
+
+`systemctl stop NetworkManager`
+
+`systemctl restart network.service`
+
+`service network restart`
 
 ## 传输文件
 
 使用 xftp7 进行连接和传输，需填写 ip 地址以及用户名和密码。
+
+也可以直接使用 vscode SSH 连接后进行文件的上传和下载。
 
 ## 安装软件包
 
@@ -121,7 +131,7 @@
 ]
 ```
 
-点击 build 进行编译，编译完成后将必要的配置文件（xml、json、cfg 文件夹等）以及运行库文件（so）拷贝至 build/policyserver/ 目录下，随后即可选择 target 并运行。
+选择编译对象为 all，然后点击 build 进行编译，编译完成后将必要的配置文件（xml、json、cfg 文件夹等）以及运行库文件（so）拷贝至 build/policyserver/ 目录下，随后即可选择 target 并运行。
 
 ## 打开服务器网络端口
 
