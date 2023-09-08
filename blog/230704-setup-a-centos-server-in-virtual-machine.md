@@ -12,9 +12,11 @@
     - [gcc 7.3.1](#gcc-731)
     - [netstat](#netstat)
     - [git](#git)
+    - [wget](#wget)
   - [使用 vscode 进行 SSH 连接](#使用-vscode-进行-ssh-连接)
   - [编译过程](#编译过程)
   - [打开服务器网络端口](#打开服务器网络端口)
+  - [解决 Downloading VS Code Server 问题](#解决-downloading-vs-code-server-问题)
 
 ## 安装虚拟机
 
@@ -75,6 +77,10 @@
 ### git
 
 `yum install -y git`
+
+### wget
+
+`yum install -y wget`
 
 ## 使用 vscode 进行 SSH 连接
 
@@ -146,3 +152,23 @@
 重启防火墙。
 
 `firewall-cmd --reload`
+
+## 解决 Downloading VS Code Server 问题
+
+从 output 的 Remote SSH 中找到并复制 commit_id。
+
+进入或创建 Linux 文件路径 `.vscode-server/cli/server/Stable-${commit_id}/server/`
+
+通过下述命令下载所需要的包。
+
+`wget https://vscode.cdn.azure.cn/stable/${commit_id}/vscode-server-linux-x64.tar.gz`
+
+然后再进行解压缩，更换路径的操作。
+
+`tar -zxvf vscode-server-linux-x64.tar.gz -C ./`
+
+`mv vscode-server-linux-x64/* .`
+
+`touch 0`
+
+重启 vscode 进行 SSH 连接。
