@@ -42,6 +42,10 @@ mac: `pbcopy < ~/.ssh/id_rsa.pub`
 
 ## python
 
+设置 pip 镜像源
+
+`pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple`
+
 删除所有包：
 
 `pip freeze > python_modules.txt`
