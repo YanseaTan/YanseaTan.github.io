@@ -20,7 +20,7 @@
 
 ## 安装虚拟机
 
-使用 VMware 16 安装 CentOS 7.9，注意在安装过程中需要进行网络连接。
+使用 VMware 16 安装 CentOS 7.9，虚拟机最低配置建议为 4G 内存以及 4 核心处理器，注意在安装过程中需要进行网络连接。
 
 ## 查询 ip 地址
 
@@ -92,7 +92,7 @@
 
 编辑配置文件 config，刷新，进行连接，输入密码，打开相应文件目录即可。
 
-随后在服务器端安装 CMake Tools 等插件。
+随后从 gitee 平台克隆 yunshan-server-v2 仓库，并在服务器端安装 CMake Tools 等插件。
 
 ## 编译过程
 
@@ -109,10 +109,11 @@
         "ENABLE_RISK_CTRL=ON"
     ],
     "cmake.configureEnvironment": {
-        "RSA_PUBLIC_KEY_PATH":"/root/server/yunshan_server_v2/atp_api/plugins/rsa_public_key.pem",
-        "ATP_ENCRYPT_PASSWORD":"/root/server/yunshan_server_v2/atp_api/lib/librsa_2048_encrypt.so"
+        "RSA_PUBLIC_KEY_PATH":"/root/repo/yunshan-server-v2/atp_api/plugins/rsa_public_key.pem",
+        "ATP_ENCRYPT_PASSWORD":"/root/repo/yunshan-server-v2/atp_api/lib/librsa_2048_encrypt.so"
         },
-        "cmake.touchbar.advanced": {}
+        "cmake.touchbar.advanced": {},
+        "cmake.cacheInit": null
 }
 ```
 
@@ -120,13 +121,6 @@
 
 ```json
 [
-  {
-    "name": "GCC 4.8.5 x86_64-redhat-linux",
-    "compilers": {
-      "C": "/usr/bin/gcc",
-      "CXX": "/usr/bin/g++"
-    }
-  },
   {
     "name": "GCC 7.3.1 x86_64-redhat-linux",
     "compilers": {
@@ -137,11 +131,17 @@
 ]
 ```
 
-选择编译对象为 all，然后点击 build 进行编译，编译完成后将必要的配置文件（xml、json、cfg 文件夹等）以及运行库文件（so）拷贝至 build/policyserver/ 目录下，随后即可选择 target 并运行。
+选择编译对象为 all，然后点击 build 进行编译。
+
+编译完成后将 ctp 官方 lib 文件复制到 `./build/policyserver/` 下，再将如图所示的部分库文件复制到 `./build/mdserver/` 路径下。
+
+将对应的配置文件（config 文件夹以及 config.json 文件）拷贝至 `./build/policyserver/` 以及 `./build/mdserver/` 目录下，并在各自目录下创建 log 文件夹。
+
+随后即可选择 target 并运行。
 
 ## 打开服务器网络端口
 
-通过如下命令查看对应窗口是否打开。
+通过如下命令查看对应端口是否打开。
 
 `firewall-cmd --query-port=8089/tcp`
 
