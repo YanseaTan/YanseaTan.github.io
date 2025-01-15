@@ -6,6 +6,15 @@
   - [安装虚拟机](#安装虚拟机)
   - [查询 ip 地址](#查询-ip-地址)
   - [传输文件](#传输文件)
+  - [替换国内镜像](#替换国内镜像)
+    - [备份原有的 YUM 源文件](#备份原有的-yum-源文件)
+    - [下载国内源的 YUM 配置文件](#下载国内源的-yum-配置文件)
+    - [清理 YUM 缓存](#清理-yum-缓存)
+    - [验证新源是否可用](#验证新源是否可用)
+    - [安装 SCL 源相关软件包](#安装-scl-源相关软件包)
+    - [检查并备份现有的 .repo 文件](#检查并备份现有的-repo-文件)
+    - [配置国内源](#配置国内源)
+    - [刷新 YUM 缓存](#刷新-yum-缓存)
   - [安装软件包](#安装软件包)
     - [unzip](#unzip)
     - [cmake3](#cmake3)
@@ -13,6 +22,7 @@
     - [netstat](#netstat)
     - [git](#git)
     - [wget](#wget)
+    - [htop](#htop)
   - [使用 vscode 进行 SSH 连接](#使用-vscode-进行-ssh-连接)
   - [编译过程](#编译过程)
   - [打开服务器网络端口](#打开服务器网络端口)
@@ -48,6 +58,64 @@
 
 也可以直接使用 vscode SSH 连接后进行文件的上传和下载。
 
+## 替换国内镜像
+
+### 备份原有的 YUM 源文件
+
+`sudo cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak`
+
+### 下载国内源的 YUM 配置文件
+
+`sudo wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo`
+
+### 清理 YUM 缓存
+
+`sudo yum clean all`
+
+`sudo yum makecache`
+
+### 验证新源是否可用
+
+`sudo yum repolist`
+
+### 安装 SCL 源相关软件包
+
+`yum install -y centos-release-scl centos-release-scl-rh`
+
+### 检查并备份现有的 .repo 文件
+
+`cp /etc/yum.repos.d/CentOS-SCLo-scl.repo /etc/yum.repos.d/CentOS-SCLo-scl.repo.bak`
+
+`cp /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo.bak`
+
+### 配置国内源
+
+`vim /etc/yum.repos.d/CentOS-SCLo-scl.repo`
+
+```ini
+[centos-sclo-sclo]
+name=CentOS-7 - SCLo sclo
+baseurl=https://mirrors.aliyun.com/centos/7/sclo/x86_64/sclo/
+gpgcheck=0
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
+```
+
+`vim /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo`
+
+```ini
+[centos-sclo-rh]
+name=CentOS-7 - SCLo rh
+baseurl=https://mirrors.aliyun.com/centos/7/sclo/x86_64/rh/
+gpgcheck=0
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo
+```
+
+### 刷新 YUM 缓存
+
+`yum clean all && yum makecache && yum repolist`
+
 ## 安装软件包
 
 ### unzip
@@ -62,13 +130,11 @@
 
 ### gcc 7.3.1
 
-`yum install -y centos-release-scl`
+`yum install -y devtoolset-11-gcc*`
 
-`yum install -y devtoolset-7-gcc*`
+`yum install -y devtoolset-11-gdb`
 
-`yum install -y devtoolset-7-gdb`
-
-`scl enable devtoolset-7 bash`
+`scl enable devtoolset-11 bash`
 
 ### netstat
 
@@ -81,6 +147,10 @@
 ### wget
 
 `yum install -y wget`
+
+### htop
+
+`yum install -y htop`
 
 ## 使用 vscode 进行 SSH 连接
 
@@ -121,13 +191,14 @@
 
 ```json
 [
-  {
-    "name": "GCC 7.3.1 x86_64-redhat-linux",
-    "compilers": {
-      "C": "/opt/rh/devtoolset-7/root/usr/bin/gcc",
-      "CXX": "/opt/rh/devtoolset-7/root/usr/bin/g++"
+    {
+      "name": "GCC 11 x86_64-redhat-linux",
+      "compilers": {
+        "C": "/opt/rh/devtoolset-11/root/usr/bin/gcc",
+        "CXX": "/opt/rh/devtoolset-11/root/usr/bin/g++"
+      },
+      "isTrusted": true
     }
-  }
 ]
 ```
 
